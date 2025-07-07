@@ -559,3 +559,46 @@ pre{
   margin: 0 auto !important;
 }
 
+/* Ubi Framework Logo CSS */
+.ubi-logo {
+    display: flex;
+    align-items: center;
+}
+
+.hex-pattern {
+    display: flex;
+    margin-right: 12px;
+}
+
+.hex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.hex {
+    background: #2c5282;
+    margin: 1px;
+    transform: rotate(45deg);
+    border-radius: 1px;
+}
+
+.hex.accent { background: #f56500; }
+.hex.light { background: #a0aec0; }
+
+.logo-text {
+    color: #2c5282;
+    font-weight: 200;
+    letter-spacing: 3px;
+    font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+/* Size variants */
+.logo-large .hex { width: 20px; height: 20px; }
+.logo-large .logo-text { font-size: 48px; letter-spacing: 6px; }
+
+.logo-medium .hex { width: 16px; height: 16px; }
+.logo-medium .logo-text { font-size: 32px; letter-spacing: 4px; }
+
+.logo-small .hex { width: 12px; height: 12px; }
+.logo-small .logo-text { font-size: 24px; letter-spacing: 3px; }
+
