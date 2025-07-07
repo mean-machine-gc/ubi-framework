@@ -8,7 +8,7 @@ layout: layout.njk
 
 The software industry stands at a crossroads. AI tools can now generate functional code from natural language, fundamentally disrupting traditional development approaches. While this democratization promises unprecedented productivity gains, it also threatens to commoditize software development services that compete solely on coding capability.
 
-**The opportunity lies not in merely using AI, but in elevating software practices beyond what AI can replicate.**
+**The opportunity lies not in merely using AI, but in elevating software practices beyond what AI can replicate, and use AI to lower the costs of software delivery excellence.**
 
 Ubi (from "ubiquitous language" in Domain-Driven Design) provides a comprehensive framework for software organizations to thrive in this new landscape. By integrating collaborative modeling, behavioral specifications, and AI-augmented development within a structured methodology, Ubi transforms potential disruption into sustainable competitive advantage.
 
