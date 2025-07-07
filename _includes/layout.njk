@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-8WR82RYJQL');
+        </script>
+        <link href="./src/prism.css" rel="stylesheet" />
+        <title>{{ title }}</title>
+        <link rel="icon" href="/icons/logo.svg" type="image/svg+xml">
+        
+        <meta property="og:title" content="{{ title }}" >
+        <meta property="og:description" content="SDLC Framework for the AI era" />
+        <meta property="og:image" content="https://ds4sd.github.io/icons/logo.svg" />
+
+        <meta charset="UTF-8">
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="MobileOptimized" content="320"/>
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no"/>
+
+
+        <link rel="stylesheet" href="/styles/main.css">
+    </head>
+    <body>
+        <nav>
+            <div class="logo">
+                <span>Ubi Framework</b></span>
+            </div>
+
+            <div class="sections">
+                <a href="/">
+                    Overview
+                </a>
+                <a href="/strategy/">
+                    Strategy
+                </a>
+                <a href="/meta-language/">
+                    Ubi Meta
+                </a>
+                <a href="/specifications/">
+                    Specifications
+                </a>
+                <a href="/toolkit/">
+                    AI Toolkit
+                </a>
+                 <a href="/sdlc-model/">
+                    SDLC Model
+                </a>
+                 <a href="/iso-9001/">
+                    ISO 9001
+                </a>
+            </div>
+
+            <div class="actions">
+                <a href="mailto:chiodigiovanni1@gmail.com">
+                    <img src="/icons/email.svg"/>
+                    <span>Contact</span>
+                </a>
+                <a href="https://github.com/mean-machine-gc/ubi-framework">
+                    <img src="/icons/github.svg"/>
+                    <span>GitHub</span>
+                </a>
+            </div>
+        </nav>
+        <article>
+            <section>
+            {{ content | safe }}
+            </section>
+            <div class="toc">
+            </div>
+        </article>
+        <script src="/toc.js"></script>
+        </article>
+       
+    </body>
+</html>
