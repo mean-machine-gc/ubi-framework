@@ -3,190 +3,164 @@ title: Specifications
 layout: layout.njk
 ---
 
-# Specifications
+# Business Logic as Code
 
-## Structured Behavioral Descriptions
+## Structured Behavioral Specifications
 
-Ubi uses structured YAML specifications to capture behavioral requirements with precision. These specifications generate business documentation, acceptance criteria in Given-When-Then format, and technical artifacts, ensuring consistency from collaborative modeling to implementation.
+Ubi transforms business requirements into executable code through structured YAML specifications that capture behavioral requirements with precision. These specifications generate business documentation, acceptance criteria in Given-When-Then format, and technical artifacts, ensuring consistency from collaborative modeling to implementation.
 
 ## Specification-Driven Development
 
-The framework employs a comprehensive specification-driven approach across architectural layers:
+The framework employs a comprehensive specification-driven approach where business logic becomes executable code:
 
-**Lifecycle Specifications → Core Layer**: Generate business documentation, Given-When-Then scenarios, and executable decider implementations with comprehensive test suites.
+**Lifecycle Specifications (ubi.lifecycle.yaml)**: Define aggregate behavior, state transitions, and business rules that generate complete implementation including types, business logic, and comprehensive test suites.
 
-**Policy Specifications → Policy Layer**: Generate business documentation for reactive rules and Policy layer implementations that handle event-driven automation.
+**Assertion Specifications (ubi.assertions.yaml)**: Transform lifecycle business rules into executable implementation specifications with precise validation logic and failure handling.
 
-**Process Specifications → Orchestration Layer**: Generate business process documentation and Orchestrator services that coordinate complex workflows across aggregates and bounded contexts.
+**Policy Specifications (ubi.policies.yaml)** *(under development)*: Define reactive business rules and event-driven automation that handle cross-aggregate coordination and business process automation.
 
-This approach ensures consistent behavioral specification fidelity from individual operations through complete distributed processes.
+**Saga Specifications (ubi.saga.yaml)** *(under development)*: Describe complex multi-aggregate workflows and cross-module processes that coordinate distributed business operations.
 
-## Operation Specifications
+This approach ensures that business logic is captured as precise, executable specifications that maintain fidelity from individual operations through complete distributed processes.
 
-Operations describe state transitions using a structured format that captures business rules, preconditions, and expected outcomes.
+## Aggregate Lifecycle Specifications
 
-### Operation Format
+Lifecycle specifications describe the complete behavior of business aggregates through structured operation definitions, capturing all possible state transitions and business invariants.
 
-```yaml
-operation: <OperationName>
-description: <Business description of the operation>
-
-given_that:
-  - <Guard1>
-  - <Guard2>
-  
-when: <Command>
-
-and:
-  - <Precondition1>
-  - <Precondition2>
-  
-then:
-  - <CommonEvent1>
-  - <CommonEvent2>
-  
-andOutcome:
-  - <Assertion1>
-  - <Assertion2>
-  
-branches:
-  - and:
-      - <BranchingLogic1>
-      - <BranchingLogic2>
-    then: <BranchEvent1>
-    andOutcome:
-      - <BranchAssertion1>
-      - <BranchAssertion2>
-      
-  - and:
-      - <BranchingLogic3>
-    then: <BranchEvent2>
-    andOutcome:
-      - <BranchAssertion3>
-```
-
-### Basic Operation Example
+### Lifecycle Format
 
 ```yaml
-operation: PlaceOrder
-description: Customer places an order for available items
+aggregate: <AggregateName>
+version: 1.0.0
+description: <Business description of the aggregate>
 
-given_that:
-  - Customer is authenticated
-  - Customer has valid payment method
-  
-when: PlaceOrder
-
-and:
-  - Items are in stock
-  - Order total is under credit limit
-  
-then:
-  - OrderPlaced
-  
-andOutcome:
-  - Order status is "confirmed"
-  - Customer receives order confirmation
-  - Order total matches cart total
+operations:
+  - name: <OperationName>
+    description: <Business description of the operation>
+    guards:
+      - <Guard1>
+      - <Guard2>
+    when: <command-name>
+    preconditions:
+      - <precondition_1>
+      - <precondition_2>
+    branches:
+      - condition: <branching_condition>
+        then: <event-name>
+        andOutcome:
+          - <outcome_assertion_1>
+          - <outcome_assertion_2>
 ```
 
-### Operation with Branching Logic
+### Basic Lifecycle Example
 
 ```yaml
-operation: ProcessPayment
-description: Process customer payment with different outcomes based on amount
+aggregate: User
+version: 1.0.0
+description: Manages user registration, authentication, and lifecycle
 
-given_that:
-  - Customer is authenticated
-  - Payment method is valid
-  
-when: ProcessPayment
+operations:
+  - name: CreateUser
+    description: Creates a new user account
+    guards:
+      - user_is_authenticated
+    when: create-user
+    preconditions:
+      - user_does_not_exist
+      - email_is_available
+      - email_is_valid
+      - password_meets_requirements
+      - terms_accepted
+    branches:
+      - condition: user_data_is_complete
+        then: user-created
+        andOutcome:
+          - user_state_is_active
+          - user_id_is_generated
+          - user_email_matches_command
+          - password_is_hashed_and_stored
 
-and:
-  - Payment amount is positive
-  - Sufficient funds available
-  
-then:
-  - PaymentProcessed
-  
-andOutcome:
-  - Payment status is "completed"
-  - Customer account is charged
-  
-branches:
-  - and:
-      - Payment amount > 1000
-    then: HighValuePaymentFlagged
-    andOutcome:
-      - Risk assessment is triggered
-      - Additional verification required
-      
-  - and:
-      - Customer is premium member
-    then: PremiumPaymentProcessed
-    andOutcome:
-      - Premium rewards are applied
-      - Priority support is enabled
+  - name: UpdateUser
+    description: Updates user information
+    guards:
+      - user_is_authenticated
+      - user_owns_account
+    when: update-user
+    preconditions:
+      - user_exists
+      - user_is_active
+      - update_data_is_provided
+    branches:
+      - condition: update_data_is_valid
+        then: user-updated
+        andOutcome:
+          - user_state_is_updated
+          - profile_reflects_command_updates
+          - unchanged_fields_preserved
 ```
 
-### Complex Operation Example
+## Implementation Assertions
+
+Assertion specifications transform lifecycle business rules into executable implementation specifications, bridging the gap between business intent and technical implementation.
+
+### Assertion Format
 
 ```yaml
-operation: ApproveCredit
-description: Credit manager approves or rejects credit application
+aggregate: <AggregateName>
+version: 1.0.0
 
-given_that:
-  - User has credit_manager role
-  - Application is in pending status
-  
-when: ApproveCredit
+guards:
+  <guard_name>: "<async implementation expression>"
 
-and:
-  - Credit score is available
-  - Income verification is complete
-  - Identity verification is complete
-  
-then:
-  - CreditDecisionMade
-  
-andOutcome:
-  - Application status is updated
-  - Decision timestamp is recorded
-  - Decision maker is tracked
-  
-branches:
-  - and:
-      - Credit score >= 700
-      - Income >= 50000
-    then: CreditApproved
-    andOutcome:
-      - Credit limit is assigned
-      - Customer receives approval notification
-      - Account activation process begins
-      
-  - and:
-      - Credit score < 700
-    then: CreditRejected
-    andOutcome:
-      - Rejection reason is documented
-      - Customer receives rejection notification
-      - Reapplication eligibility date is set
-      
-  - and:
-      - Credit score >= 600
-      - Income >= 75000
-    then: CreditApprovedWithConditions
-    andOutcome:
-      - Reduced credit limit is assigned
-      - Special terms are applied
-      - Monitoring requirements are activated
+preconditions:
+  <precondition_name>: "<pure function expression>"
+
+branching_conditions:
+  <condition_name>: "<decision logic expression>"
+
+outcome_assertions:
+  <assertion_name>:
+    assert: "<validation expression>"
+    description: "<human readable description>"
 ```
 
-## Policy Specifications
+### Assertion Example
 
-Policies describe reactive business rules that trigger commands in response to events.
+```yaml
+aggregate: User
+version: 1.0.0
 
-### Policy Format
+guards:
+  user_is_authenticated: "await authService.verifyToken(cmd.metadata.token)"
+  user_owns_account: "await authService.checkOwnership(cmd.payload.userId, authContext.userId)"
+
+preconditions:
+  user_does_not_exist: "state === null"
+  email_is_valid: "isValidEmail(cmd.payload.email)"
+  password_meets_requirements: "isValidPassword(cmd.payload.password)"
+  terms_accepted: "cmd.payload.termsAccepted === true"
+
+branching_conditions:
+  user_data_is_complete: "hasCompleteName(cmd.payload.profile)"
+  always: "true"
+
+outcome_assertions:
+  user_state_is_active:
+    assert: "state.status === 'active'"
+    description: "User status must be set to active"
+  user_id_is_generated:
+    assert: "state.id && typeof state.id === 'string' && state.id.length > 0"
+    description: "User ID must be generated and non-empty"
+  password_is_hashed_and_stored:
+    assert: "state.passwordHash && state.passwordHash !== cmd.data.password && isBcryptHash(state.passwordHash)"
+    description: "Password must be hashed (not plain text) and stored"
+```
+
+## Policy Specifications *(Under Development)*
+
+Policies describe reactive business rules that trigger commands in response to events, enabling event-driven automation and cross-aggregate coordination.
+
+### Policy Format *(Preview)*
 
 ```yaml
 policy: <PolicyName>
@@ -195,17 +169,17 @@ description: <Business description of the policy>
 whenever: <TriggerEvent>
 
 and:
-  - <Condition1>
-  - <Condition2>
+  - <condition_1>
+  - <condition_2>
 
-then: <ResultingCommand>
+then: <resulting_command>
 
 andOutcome:
-  - <Assertion1>
-  - <Assertion2>
+  - <assertion_1>
+  - <assertion_2>
 ```
 
-### Basic Policy Example
+### Policy Example *(Preview)*
 
 ```yaml
 policy: OrderInventoryCheck
@@ -213,482 +187,105 @@ description: Automatically check inventory when order is placed
 
 whenever: OrderPlaced
 
-then: CheckInventory
-
-andOutcome:
-  - Inventory verification is initiated
-  - Stock levels are validated
-  - Availability status is updated
-```
-
-### Conditional Policy Example
-
-```yaml
-policy: HighValueOrderReview
-description: Flag high-value orders for manual review
-
-whenever: OrderPlaced
-
 and:
-  - Order total > 5000
-  - Customer account age < 30 days
+  - order_total_above_threshold
+  - customer_is_new
 
 then: FlagForManualReview
 
 andOutcome:
-  - Order is marked for review
-  - Review team is notified
-  - Customer receives processing notification
+  - review_task_is_created
+  - customer_receives_notification
+  - order_status_is_pending_review
 ```
 
-## Process Specifications
+## Saga Specifications *(Under Development)*
 
-Processes describe complex workflows that compose multiple operations and policies.
+Sagas describe complex multi-aggregate workflows that coordinate distributed business operations across module boundaries.
 
-### Synthetic Process Format
-
-```yaml
-process: <ProcessName>
-description: <Business description of the process>
-
-when: <InitialCommand>
-
-then:
-  - <ResultEvent1>
-  - <ResultEvent2>
-  - <ResultEvent3>
-
-andOutcome:
-  - <ProcessAssertion1>
-  - <ProcessAssertion2>
-```
-
-### Detailed Process Format
+### Saga Format *(Preview)*
 
 ```yaml
-process: <ProcessName>
+saga: <SagaName>
 description: <Business description of the process>
+
+when: <initial_command>
 
 steps:
-  - operation: <OperationName1>
-    triggers: <Event1>
-    
-  - policy: <PolicyName1>
-    whenever: <Event1>
-    then: <Command1>
-    
-  - operation: <OperationName2>
-    when: <Command1>
-    triggers: <Event2>
+  - operation: <operation_name>
+    triggers: <event_name>
+  - policy: <policy_name>
+    whenever: <event_name>
+    then: <command_name>
 
 finalOutcome:
-  - <FinalAssertion1>
-  - <FinalAssertion2>
+  - <final_assertion_1>
+  - <final_assertion_2>
 ```
 
-### Synthetic Process Format
+### Saga Example *(Preview)*
 
 ```yaml
-process: OrderFulfillment
+saga: OrderFulfillment
 description: Complete order processing from placement to delivery
 
 when: PlaceOrder
 
-then:
-  - OrderConfirmed
-  - PaymentProcessed
-  - ItemsShipped
-  - CustomerNotified
-
-andOutcome:
-  - Order is completely fulfilled
-  - Customer receives products
-  - Payment is collected
-  - Delivery is confirmed
-```
-
-### Detailed Process Format
-
-```yaml
-process: CustomerOnboarding
-description: Complete customer registration and setup process
-
 steps:
-  - operation: RegisterCustomer
-    triggers: CustomerRegistered
-    
-  - policy: SendWelcomeEmail
-    whenever: CustomerRegistered
-    then: SendWelcomeMessage
-    
-  - operation: VerifyEmail
-    when: ConfirmEmail
-    triggers: EmailVerified
-    
-  - policy: ActivateAccount
-    whenever: EmailVerified
-    then: EnableCustomerAccess
-    
-  - operation: CompleteProfile
-    when: UpdateProfile
-    triggers: ProfileCompleted
+  - operation: ValidateOrder
+    triggers: OrderValidated
+  - policy: ProcessPayment
+    whenever: OrderValidated
+    then: ProcessPayment
+  - operation: FulfillOrder
+    triggers: PaymentProcessed
 
 finalOutcome:
-  - Customer account is active
-  - Profile is complete
-  - Access is enabled
-  - Welcome sequence is finished
+  - order_is_completely_fulfilled
+  - customer_receives_products
+  - payment_is_collected
 ```
 
-## Lifecycle Specifications
+## Generated Implementation
 
-Lifecycle specifications describe the complete behavior of an aggregate through a collection of operation specifications, defining all possible state transitions and business invariants.
+These YAML specifications automatically generate complete, production-ready implementations:
 
-### Lifecycle Format
+**TypeScript Types**: Complete type definitions with validation patterns and business rule constraints
 
-```yaml
-lifecycle: <AggregateName>
-description: <Business description of the aggregate lifecycle>
+**Business Logic**: Executable decider implementations that enforce all business rules and state transitions
 
-operations:
-  - when: <Command1>
-    and:
-      - <Precondition1>
-      - <Precondition2>
-    branches:
-      - then:
-          - <Event1>
-        andOutcome:
-          - <Assertion1>
-          - <Assertion2>
-      - and:
-          - <BranchingLogic>
-        then:
-          - <BranchEvent>
-        andOutcome:
-          - <BranchAssertion>
+**Test Suites**: Comprehensive test coverage including success scenarios, failure cases, and edge conditions
 
-  - when: <Command2>
-    and:
-      - <Precondition3>
-    branches:
-      - then:
-          - <Event2>
-        andOutcome:
-          - <Assertion3>
+**API Documentation**: Interface definitions based on commands, queries, and events
 
-invariants:
-  - <BusinessRule1>
-  - <BusinessRule2>
-  - <BusinessRule3>
-```
+**Business Documentation**: Human-readable process descriptions and Given-When-Then acceptance criteria
 
-### Lifecycle Example
+## Business Logic Benefits
 
-```yaml
-lifecycle: Cart
-description: Shopping cart lifecycle managing product selection and ordering
+**Executable Specifications**: Business rules become runnable code that can be tested and validated
 
-operations:
-  - when: create-cart
-    and:
-      - cart does not already exist
-    branches:
-      - then:
-          - cart-created
-        andOutcome:
-          - cart status is empty
-          - cart has an empty product list
-          - cart total price is 0
+**Single Source of Truth**: Specifications drive all implementation artifacts, ensuring consistency
 
-  - when: add-product
-    and:
-      - cart exists
-      - product does not already exist in cart
-      - product quantity is greater than 0
-      - cart status is either empty or active
-    branches:
-      - then:
-          - product-added
-        andOutcome:
-          - product is added to the cart
-          - cart status is active if at least one product exists
-          - cart total price is updated with the product's price * quantity
-      - and:
-          - cart status is empty
-        then:
-          - cart-activated
-        andOutcome:
-          - cart status is active
+**Business Alignment**: YAML format is readable by both technical and business stakeholders
 
-  - when: remove-product
-    and:
-      - cart exists
-      - product exists in the cart
-      - cart status is active
-      - product quantity is greater than 0
-    branches:
-      - then:
-          - product-removed
-        andOutcome:
-          - product is removed from the cart
-          - cart status remains active if there are still products in the cart
-          - cart total price is decreased by the product's price * quantity
-      - and:
-          - cart is now empty
-        then:
-          - cart-emptied
-        andOutcome:
-          - cart status is empty
-          - cart total price is 0
+**Precision**: Structured format eliminates ambiguity in behavioral descriptions
 
-  - when: cancel-cart
-    and:
-      - cart exists
-      - cart status is active
-    branches:
-      - then:
-          - cart-cancelled
-        andOutcome:
-          - cart status is cancelled
-          - cart total price remains unchanged
+**Traceability**: Direct connection between business intent and technical implementation
 
-  - when: confirm-cart
-    and:
-      - cart exists
-      - cart status is active
-    branches:
-      - then:
-          - cart-confirmed
-        andOutcome:
-          - cart status is confirmed
-          - cart total price remains unchanged
+**Quality Assurance**: Automated generation ensures comprehensive test coverage and type safety
 
-  - when: add-product-quantity
-    and:
-      - cart exists
-      - cart is active
-      - product exists in the cart
-      - quantity added is greater than 0
-    branches:
-      - then:
-          - product-quantity-added
-        andOutcome:
-          - product quantity is updated
-          - cart total price is updated with the new product's price * new quantity
-          
-  - when: remove-product-quantity
-    and:
-      - cart exists
-      - cart is active
-      - product exists in the cart
-      - quantity removed is greater than 0
-      - quantity removed is less than or equal to current product quantity
-    branches:
-      - then:
-          - product-quantity-removed
-        andOutcome:
-          - product quantity is decreased
-          - cart total price is decreased by the product's price * quantity removed
+**Maintainability**: Changes to business rules propagate consistently through all implementation layers
 
-invariants:
-  - Cart total price should be 0 when empty
-  - Cart should have an empty product list when status is 'empty'
-  - Cart should have a positive total price when active
-  - Cart should have products when status is 'active'
-  - Cart should not contain products with zero or negative quantities
-  - Cart should not contain negative priced products
-  - Cart status should not be 'cancelled' or 'confirmed' while adding or removing products
-  - Cart status should remain 'cancelled' after cancellation
-  - Cart status should remain 'confirmed' after confirmation
-  - Total price should be calculated as the sum of product price * quantity
-```
+Business logic as code transforms the traditional gap between business requirements and technical implementation into a seamless, automated process where business intent drives executable reality.
 
-## Generated Outputs
+## Specification Architecture
 
-These YAML specifications automatically generate:
+The Ubi Framework employs a layered specification architecture that mirrors the system's implementation layers:
 
-**Business Documentation**: Human-readable process descriptions and business rules **Acceptance Criteria**: Given-When-Then test scenarios for validation **API Specifications**: Interface definitions based on commands, queries, and events **Test Scenarios**: Automated test cases covering success and failure paths
+**Core Layer (ubi.lifecycle.yaml + ubi.assertions.yaml)**: Individual aggregate behavior with complete business rule enforcement and state management
 
-## Specification Benefits
+**Policy Layer (ubi.policies.yaml)**: Event-driven automation and reactive business rules that coordinate between aggregates
 
-**Business Alignment**: YAML format is readable by both technical and business stakeholders **Precision**: Structured format eliminates ambiguity in behavioral descriptions  
-**Traceability**: Direct connection between specifications and all generated artifacts **Consistency**: Standardized format ensures uniform descriptions across projects **Automation**: Specifications drive code generation, testing, and documentation
+**Orchestration Layer (ubi.saga.yaml)**: Complex multi-aggregate workflows and distributed process coordination
 
-Specifications serve as the authoritative source of business intent that flows consistently through all framework components and generated artifacts.
-
-
-
-## Executable Specification Format
-
-Executable specifications transform descriptive business rules into testable assertions that validate decider implementation.
-
-### Executable Operation Format
-
-typescript
-
-```typescript
-- when: <Command>
-  and:
-    - description: <Business rule description>
-      assertion: (dm) => <TypeScript assertion on Decision Model>
-      failureCode: <Error code for failed precondition>
-      
-  branches:
-    - description: <Branch condition description>
-      assertion: (dm) => <TypeScript condition evaluation>
-      then:
-        - <Event>
-      andOutcome:
-        - description: <Outcome description>
-          assertion: (om) => <TypeScript assertion on Outcome Model>
-```
-
-### Executable Specification Example
-
-typescript
-
-```typescript
-- when: create-cart
-  and:
-    - description: Cart does not already exist
-      assertion: (dm) => dm.state === undefined
-      failureCode: cart_already_exists
-
-  branches:
-    - description: Always
-      assertion: (dm) => true
-      then:
-        - cart-created
-      andOutcome:
-        - description: emits `cart-created`
-          assertion: |
-            (om) => {
-              const cartCreatedEvt = om.evts.find(e => e.type === 'cart-created');
-              expect(cartCreatedEvt).toBeDefined();
-            }
-        - description: new state.status is `empty`
-          assertion: (om) => expect(om.state.status).toBe('empty')
-        - description: cart total price is 0
-          assertion: (om) => expect(om.state.totalPrice).toBe(0)
-
-- when: add-product
-  and:
-    - description: Cart exists
-      assertion: (dm) => dm.state !== undefined
-      failureCode: cart_does_not_exist
-
-    - description: Product does not already exist in cart
-      assertion: (dm) => !dm.state.products.find(p => p.id === dm.cmd.data.productId)
-      failureCode: product_already_in_cart
-
-    - description: Product quantity is greater than 0
-      assertion: (dm) => dm.cmd.data.quantity > 0
-      failureCode: invalid_quantity
-
-    - description: Cart status is either empty or active
-      assertion: (dm) => ['empty', 'active'].includes(dm.state.status)
-      failureCode: cart_not_available
-
-  branches:
-    - description: Always
-      assertion: (dm) => true
-      then:
-        - product-added
-      andOutcome:
-        - description: emits `product-added`
-          assertion: (om) => expect(om.evts.find(e => e.type === 'product-added')).toBeDefined()
-        - description: product is added to the cart
-          assertion: (om) => expect(om.state.products).toContainEqual(
-            expect.objectContaining({ id: dm.cmd.data.productId })
-          )
-        - description: cart total price is updated
-          assertion: (om) => expect(om.state.totalPrice).toBeGreaterThan(0)
-
-    - description: Cart status was empty
-      assertion: (dm) => dm.state.status === 'empty'
-      then:
-        - cart-activated
-      andOutcome:
-        - description: emits `cart-activated`
-          assertion: |
-            (om) => {
-              const cartActivatedEvt = om.evts.find(e => e.type === 'cart-activated');
-              expect(cartActivatedEvt).toBeDefined();
-            }
-        - description: cart status is active
-          assertion: (om) => expect(om.state.status).toBe('active')
-
-- when: confirm-cart
-  and:
-    - description: Cart exists
-      assertion: (dm) => dm.state !== undefined
-      failureCode: cart_does_not_exist
-
-    - description: Cart status is active
-      assertion: (dm) => dm.state.status === 'active'
-      failureCode: cart_not_active
-
-  branches:
-    - description: Always
-      assertion: (dm) => true
-      then:
-        - cart-confirmed
-      andOutcome:
-        - description: emits `cart-confirmed`
-          assertion: (om) => expect(om.evts[0]?.type).toBe('cart-confirmed')
-        - description: cart status is confirmed
-          assertion: (om) => expect(om.state.status).toBe('confirmed')
-        - description: cart total price remains unchanged
-          assertion: (om) => expect(om.state.totalPrice).toBe(dm.state.totalPrice)
-```
-
-### Executable Invariants
-
-typescript
-
-```typescript
-- invariants:
-  - appliesTo:
-      - EmptyCart
-    description: Cart total price should be 0 when empty
-    assertion: (state) => expect(state.totalPrice).toBe(0)
-
-  - appliesTo:
-      - EmptyCart
-    description: Cart should have an empty product list when status is 'empty'
-    assertion: (state) => expect(state.products).toHaveLength(0)
-
-  - appliesTo:
-      - ActiveCart
-    description: Cart should have a positive total price when active
-    assertion: (state) => expect(state.totalPrice).toBeGreaterThan(0)
-
-  - appliesTo:
-      - ActiveCart
-    description: Cart should have products when status is 'active'
-    assertion: (state) => expect(state.products.length).toBeGreaterThan(0)
-
-  - appliesTo: all
-    description: Cart should not contain products with zero or negative quantities
-    assertion: (state) => 
-      state.products.forEach(product => 
-        expect(product.quantity).toBeGreaterThan(0)
-      )
-
-  - appliesTo: all
-    description: Total price should be calculated as the sum of product price * quantity
-    assertion: (state) => {
-      const calculatedTotal = state.products.reduce(
-        (sum, product) => sum + (product.price * product.quantity), 0
-      );
-      expect(state.totalPrice).toBe(calculatedTotal);
-    }
-```
-
-### Generation Process
-
-1. **Descriptive to Executable**: AI toolkit transforms descriptive specifications into executable format by adding programmatic assertions
-2. **Test Generation**: Executable specifications generate comprehensive test suites that validate decider implementation
-3. **Implementation Validation**: Tests ensure that business rules are correctly implemented in the decider pattern
-4. **Regression Protection**: Executable specifications prevent behavioral regressions during code changes
+This architectural alignment ensures that specifications maintain behavioral fidelity from individual operations through complete distributed business processes, enabling true business logic as executable code.
