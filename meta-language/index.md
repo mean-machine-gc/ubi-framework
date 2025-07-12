@@ -4,10 +4,9 @@ layout: layout.njk
 ---
 # Meta-Language
 
-
 ## A Ubiquitous Vocabulary for Software Behavior
 
-The Ubi meta-language establishes a shared vocabulary for describing software behavior with precision across every stage of development. It addresses the fundamental challenge of maintaining consistency between business requirements and technical implementation.
+The Ubi meta-language establishes a shared vocabulary for describing software behavior with precision across every stage of development. It addresses the fundamental challenge of maintaining consistency between business requirements and technical implementation through executable specifications.
 
 ## The Foundation of Software Behavior
 
@@ -29,7 +28,7 @@ When <Agent issues Command>, Then <Event happened>
 
 Examples:
 
-- When Customer issues PlaceOrder, Then OrderPlaced
+- When Customer issues CreateUser, Then UserCreated
 - When System issues ProcessPayment, Then PaymentProcessed
 
 This corresponds to the command-event sequences captured in EventStorming sessions, providing a natural language expression of business actions.
@@ -46,7 +45,7 @@ Whenever <Event happened>, Then <Command is issued>
 
 Examples:
 
-- Whenever OrderPlaced, Then CheckInventory is issued
+- Whenever UserCreated, Then SendWelcomeEmail is issued
 - Whenever PaymentFailed, Then NotifyCustomer is issued
 
 Policies represent the automation points in business processes, whether fully automated or requiring human intervention.
@@ -79,7 +78,8 @@ Given that <Guards>,
 When <Command>,
 And <Preconditions>,
 Then <Common Events>,
-Branch [And <Branching Logic>, And <Additional Events>]
+Branch [And <Branching Logic>, Then <Additional Events>]
+AndOutcome <State Changes>
 ```
 
 **Guards**: Access control and security rules that determine operation eligibility.
@@ -92,11 +92,12 @@ Branch [And <Branching Logic>, And <Additional Events>]
 
 ```
 Given that Customer is authenticated,
-When PlaceOrder,
-And Customer has valid payment method,
-And Items are in stock,
-Then OrderConfirmed,
-Branch [And Order total > €100, And HighValueOrderFlagged]
+When CreateUser,
+And Email is available,
+And Password meets requirements,
+Then UserCreated,
+Branch [And User data is complete, Then UserActivated]
+AndOutcome [User state is active, User ID is generated]
 ```
 
 ## Software Capabilities
@@ -136,10 +137,7 @@ This consistency enables the description of **modular behavior** - how systems c
 
 The meta-language thus serves as the foundation for both individual module design and inter-module communication, enabling precise behavioral specifications at every scale of system architecture.
 
-
 ___
-
-
 
 # Modular System Behavior
 
@@ -206,10 +204,7 @@ This analysis leads to several key design principles:
 
 The next sections explore how to identify appropriate transactional boundaries through the concepts of aggregates and entity lifecycles, providing practical guidance for applying these principles in modular system design.
 
-
 ___
-
-
 
 # Aggregates and Lifecycles
 
@@ -309,9 +304,21 @@ Aggregates provide natural boundaries for module design because they represent t
 
 This alignment between aggregate boundaries and module boundaries ensures that the technical architecture supports business requirements while maintaining the loose coupling principles essential for sustainable modular systems.
 
+## Executable Specifications
 
+The meta-language transforms from descriptive vocabulary to executable specifications through structured YAML formats:
 
-## Bounded Contexts
+**ubi.lifecycle.yaml**: Defines aggregate operations with guards, preconditions, branching logic, and outcome assertions that generate complete TypeScript implementations.
+
+**ubi.assertions.yaml**: Transforms lifecycle business rules into executable expressions with precise validation logic and comprehensive error handling.
+
+**ubi.policies.yaml** *(under development)*: Specifies reactive business rules and event-driven automation with clear triggering conditions and resulting actions.
+
+**ubi.saga.yaml** *(under development)*: Describes complex multi-aggregate workflows with coordination logic and compensating actions for distributed consistency.
+
+___
+
+# Bounded Contexts
 
 All behavioral concepts exist within **Bounded Contexts** - specific business areas that contain business processes and define meaning, actors, and workflows.
 
@@ -342,4 +349,14 @@ All behavioral concepts exist within **Bounded Contexts** - specific business ar
 
 Bounded contexts provide the scope within which behavioral specifications maintain consistent meaning, ensuring meta-language precision serves coherent business purposes.
 
+## Business Logic as Executable Reality
 
+The meta-language's ultimate purpose is transforming business intent into executable reality. Through structured specifications that operate within clear bounded contexts, business rules become:
+
+- **Type-safe implementations** with comprehensive validation
+- **Comprehensive test suites** covering all business scenarios
+- **Documentation** that stays synchronized with implementation
+- **APIs** that enforce business rules consistently within context boundaries
+- **Event streams** that enable reliable business process coordination across contexts
+
+This transformation ensures that the gap between business requirements and technical implementation disappears, replaced by a seamless flow from business specification to production-ready code that respects business boundaries and maintains conceptual integrity.
