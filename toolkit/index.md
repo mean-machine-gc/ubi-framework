@@ -47,7 +47,7 @@ The `analyze_domain_patterns` tool provides deep domain knowledge for specific i
 
 The `build_operation_incrementally` tool guides users through designing complete operations using progressive analysis. The tool systematically analyzes security requirements, business preconditions, branching logic, and outcome assertions to generate comprehensive operation specifications that handle real-world complexity.
 
-### Generation Tools: Executable Implementation
+### Generation Tools: Dual-Purpose Implementation
 
 **Lifecycle to Implementation Pipeline**: Complete automation from specifications to working code.
 
@@ -57,6 +57,15 @@ The generation tools transform YAML specifications into production-ready impleme
 - **`generate_types`**: Creates comprehensive TypeScript type definitions with validation patterns and business rule constraints  
 - **`generate_decider`**: Produces complete business logic implementations using the **ubi-decider** library with full type safety and functional programming patterns
 - **`generate_tests`**: Generates comprehensive test suites covering all business scenarios, failure cases, and edge conditions
+
+**Business Documentation Generation**: Transform specifications into stakeholder-ready documentation.
+
+Business logic as code enables bidirectional value generation from shared specifications:
+
+- **`generate_business_documentation`**: Creates comprehensive business documentation including executive summaries, detailed operation descriptions, and business rule explanations in stakeholder-friendly language
+- **`generate_given_when_then`**: Produces Given-When-Then scenarios for each operation, providing clear acceptance criteria and examples that business stakeholders can validate
+- **`generate_api_documentation`**: Creates technical API documentation with business context, showing how technical interfaces map to business operations
+- **`generate_compliance_reports`**: Generates regulatory compliance documentation showing how business rules enforce industry requirements and audit trails
 
 Each generation tool uses iterative sampling to ensure quality, consistency, and completeness while maintaining alignment with business specifications.
 
@@ -132,12 +141,14 @@ The toolkit's foundation tools ensure that even individual developers can produc
 
 ### Specification-Driven Excellence
 
-The toolkit enables complete specification-driven development where business logic becomes executable code:
+The toolkit enables complete specification-driven development where business logic becomes executable code and living documentation:
 
-- **Single Source of Truth**: YAML specifications drive all implementation artifacts
-- **Perfect Alignment**: Business requirements and technical implementation never diverge
-- **Comprehensive Testing**: Every business rule is automatically tested
-- **Maintainable Evolution**: Changes flow systematically through all implementation layers
+- **Single Source of Truth**: YAML specifications drive both implementation artifacts and business documentation
+- **Perfect Alignment**: Business requirements, documentation, and technical implementation never diverge
+- **Bidirectional Value**: Same specifications generate stakeholder documentation and production code
+- **Living Documentation**: Business documentation stays automatically synchronized with implementation
+- **Comprehensive Testing**: Every business rule is automatically tested and documented
+- **Maintainable Evolution**: Changes flow systematically through all implementation layers and documentation
 
 ### Accessibility Without Compromise
 
@@ -163,6 +174,8 @@ The toolkit makes sophisticated architectural patterns accessible while maintain
 **CLI and Web Applications**: Command-line and web-based interfaces are under development to provide additional access modes for different workflow preferences.
 
 **Extended Layer Support**: Future development will include comprehensive tools for Inbox layer command processing pipelines and Outbox layer event publishing patterns.
+
+**Enterprise Documentation Integration**: Planned integration with Jira and Confluence to automatically sync business documentation, create development tasks with acceptance criteria, and maintain traceability between business requirements and implementation.
 
 **Multi-Aggregate Coordination**: Advanced capabilities for cross-aggregate analysis, saga design guidance, and bounded context alignment to support complex distributed system architectures.
 
