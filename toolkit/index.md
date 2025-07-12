@@ -55,10 +55,22 @@ The generation tools transform YAML specifications into production-ready impleme
 
 - **`generate_assertions`**: Converts lifecycle business rules into executable implementation specifications with precise validation logic
 - **`generate_types`**: Creates comprehensive TypeScript type definitions with validation patterns and business rule constraints  
-- **`generate_decider`**: Produces complete business logic implementations using the decider pattern with type safety
+- **`generate_decider`**: Produces complete business logic implementations using the **ubi-decider** library with full type safety and functional programming patterns
 - **`generate_tests`**: Generates comprehensive test suites covering all business scenarios, failure cases, and edge conditions
 
 Each generation tool uses iterative sampling to ensure quality, consistency, and completeness while maintaining alignment with business specifications.
+
+### ubi-decider Library Integration
+
+The toolkit generates implementations using the **ubi-decider** library, which provides the foundational patterns for the decider architecture:
+
+**Functional Programming Patterns**: Pure function implementations for preconditions, branches, and evolutions that ensure predictable, testable business logic without side effects.
+
+**Type Safety**: Comprehensive TypeScript interfaces including `TDecider`, `DecisionModel`, `OutcomeModel`, and strongly-typed command/event structures that prevent runtime errors.
+
+**Framework Consistency**: Standardized implementation patterns that align with Ubi architectural principles, ensuring consistency across projects and teams.
+
+**Testing Integration**: Built-in support for specification-driven test generation with proper typing for decision models and outcome validation.
 
 ### Validation Tools: Quality Assurance
 
