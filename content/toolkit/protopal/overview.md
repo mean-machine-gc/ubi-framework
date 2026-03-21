@@ -1,12 +1,7 @@
 ---
-title: "Protopal"
-description: "Event-sourced frontend agentic prototyping companion"
-weight: 5
+title: "Overview"
+weight: 1
 toc: true
-npm: "protopal"
-status: "experimental"
-projection: "Design projection"
-tags: ["prototyping", "event-sourced", "frontend", "agentic", "design"]
 ---
 
 ## Overview
@@ -26,25 +21,3 @@ In the fundamental model, design is a sequence of transformations from user cont
 | Processing stages | Context → Concept → Prototype → Specification |
 | Invariants | Accessibility, user model consistency, brand coherence |
 | Feedback loops | Event replay and branch exploration |
-
-## Installation
-
-```bash
-npm install protopal
-```
-
-## Usage
-
-```bash
-npx protopal init --framework react
-npx protopal prototype ./design-context
-npx protopal replay --from event-42
-```
-
-## Key Features
-
-- **Event-sourced state** — every prototype state is an event, every mutation is recorded, every state is recoverable
-- **Agentic iteration** — AI-assisted design exploration with full provenance
-- **Branch and explore** — fork the prototype at any point, explore alternatives, merge back
-- **Frontend-native** — generates real component code, not wireframes
-- **Framework pipeline** — design specifications can flow from Protopal into VibeRail for implementation

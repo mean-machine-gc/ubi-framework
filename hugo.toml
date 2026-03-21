@@ -23,10 +23,14 @@ enableGitInfo = true
 
 [menu]
   [[menu.main]]
-    name = "Framework"
-    url = "/framework/introduction/"
+    name = "Blueprint"
+    url = "/blueprint/introduction/"
     weight = 1
+  [[menu.main]]
+    name = "SDLC"
+    url = "/sdlc/projection/"
+    weight = 2
   [[menu.main]]
     name = "Toolkit"
     url = "/toolkit/"
-    weight = 2
+    weight = 3

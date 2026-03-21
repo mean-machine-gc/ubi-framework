@@ -1,18 +1,6 @@
 {{ define "main" }}
 <article class="doc-page">
-  <nav class="doc-nav">
-    <div class="doc-nav-sticky">
-      <a href="{{ .Parent.RelPermalink }}" class="doc-nav-title">{{ .Parent.Title }}</a>
-      <ul class="doc-nav-list">
-        {{ range .Parent.Pages.ByWeight }}
-        <li>
-          <a href="{{ .RelPermalink }}" class="doc-nav-link{{ if eq $.RelPermalink .RelPermalink }} active{{ end }}">{{ .Title }}</a>
-        </li>
-        {{ end }}
-      </ul>
-      <a href="{{ "toolkit/" | relURL }}" class="doc-nav-back">&larr; All Tools</a>
-    </div>
-  </nav>
+  {{ partial "doc-sidenav.html" (dict "Section" .Parent "Page" .) }}
   <div class="doc-content">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <a href="{{ .Site.BaseURL }}">Home</a>

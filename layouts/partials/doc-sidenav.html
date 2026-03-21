@@ -1,0 +1,12 @@
+<nav class="doc-nav">
+  <div class="doc-nav-sticky">
+    <a href="{{ .Section.RelPermalink }}" class="doc-nav-title">{{ .Section.Title }}</a>
+    <ul class="doc-nav-list">
+      {{ range .Section.Pages.ByWeight }}
+      <li>
+        <a href="{{ .RelPermalink }}" class="doc-nav-link{{ if eq $.Page.RelPermalink .RelPermalink }} active{{ end }}">{{ .Title }}</a>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+</nav>

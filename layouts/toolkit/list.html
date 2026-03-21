@@ -15,10 +15,12 @@
       {{ partial "graph-hero.html" . }}
     </div>
   </div>
-  {{ if .Pages }}
+  {{ if .Sections }}
   <div class="tool-grid">
-    {{ range .Pages.ByWeight }}
-    <a href="{{ .RelPermalink }}" class="tool-card">
+    {{ range .Sections.ByWeight }}
+    {{ $target := .RelPermalink }}
+    {{ with index .Pages.ByWeight 0 }}{{ $target = .RelPermalink }}{{ end }}
+    <a href="{{ $target }}" class="tool-card">
       <div class="tool-card-header">
         <h2 class="tool-name">{{ .Title }}</h2>
         {{ with .Params.status }}

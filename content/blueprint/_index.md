@@ -1,5 +1,5 @@
 ---
-title: "Framework"
+title: "Blueprint"
 description: "A fundamental model for complex information processing systems"
 ---
 

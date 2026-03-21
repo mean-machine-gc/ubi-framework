@@ -1,25 +1,7 @@
 {{ define "main" }}
 <article class="doc-page">
-  <nav class="doc-nav">
-    <div class="doc-nav-sticky">
-      <a href="{{ .Parent.RelPermalink }}" class="doc-nav-title">Framework</a>
-      <ul class="doc-nav-list">
-        {{ range .Parent.Pages }}
-        <li>
-          <a href="{{ .RelPermalink }}" class="doc-nav-link{{ if eq $.RelPermalink .RelPermalink }} active{{ end }}">{{ .Title }}</a>
-          {{ if and (eq $.RelPermalink .RelPermalink) .Params.toc }}
-          {{ with $.Page.TableOfContents }}
-          <div class="doc-nav-sub">
-            {{ . }}
-          </div>
-          {{ end }}
-          {{ end }}
-        </li>
-        {{ end }}
-      </ul>
-    </div>
-  </nav>
-  <div class="doc-content doc-content--centered">
+  {{ partial "doc-sidenav.html" (dict "Section" .Parent "Page" .) }}
+  <div class="doc-content">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <a href="{{ .Site.BaseURL }}">Home</a>
       {{ range .Ancestors.Reverse }}{{ if not .IsHome }}
