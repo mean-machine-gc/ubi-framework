@@ -1,5 +1,13 @@
-# Lume
-_site
+# Hugo
+/public/
+/resources/_gen/
+/.hugo_build.lock
 
 # OS
-.DS_store
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~

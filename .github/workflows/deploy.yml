@@ -1,36 +1,50 @@
-name: Deploy
+name: Deploy to GitHub Pages
+
 on:
   push:
-    branches: main
-  pull_request:
-    branches: main
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Deploy
+  build:
     runs-on: ubuntu-latest
-
-    permissions:
-      id-token: write # Needed for auth with Deno Deploy
-      contents: read # Needed to clone the repository
-
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v4
-
-      - name: Install Deno
-        uses: denoland/setup-deno@v2
+      - uses: actions/checkout@v4
         with:
-          deno-version: v1.x
-
-      - name: Build step
-        run: "deno task build"
-
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
+          fetch-depth: 0
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
         with:
-          project: "g6i-ubi-framework-41"
-          entrypoint: "serve.ts"
-          root: ""
-          
-          
+          hugo-version: 'latest'
+          extended: true
+      - name: Build
+        run: hugo --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+        env:
+          HUGO_ENV: production
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

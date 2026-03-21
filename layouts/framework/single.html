@@ -1,0 +1,53 @@
+{{ define "main" }}
+<article class="doc-page">
+  <nav class="doc-nav">
+    <div class="doc-nav-sticky">
+      <a href="{{ .Parent.RelPermalink }}" class="doc-nav-title">Framework</a>
+      <ul class="doc-nav-list">
+        {{ range .Parent.Pages }}
+        <li>
+          <a href="{{ .RelPermalink }}" class="doc-nav-link{{ if eq $.RelPermalink .RelPermalink }} active{{ end }}">{{ .Title }}</a>
+          {{ if and (eq $.RelPermalink .RelPermalink) .Params.toc }}
+          {{ with $.Page.TableOfContents }}
+          <div class="doc-nav-sub">
+            {{ . }}
+          </div>
+          {{ end }}
+          {{ end }}
+        </li>
+        {{ end }}
+      </ul>
+    </div>
+  </nav>
+  <div class="doc-content doc-content--centered">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="{{ .Site.BaseURL }}">Home</a>
+      {{ range .Ancestors.Reverse }}{{ if not .IsHome }}
+      <span class="breadcrumb-sep">/</span>
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      {{ end }}{{ end }}
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">{{ .Title }}</span>
+    </nav>
+    <header class="page-header">
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="page-description">{{ . }}</p>{{ end }}
+    </header>
+    <div class="prose">
+      {{ .Content }}
+    </div>
+    <nav class="page-nav">
+      {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" class="nav-prev">&larr; {{ .Title }}</a>{{ end }}
+      {{ with .NextInSection }}<a href="{{ .RelPermalink }}" class="nav-next">{{ .Title }} &rarr;</a>{{ end }}
+    </nav>
+  </div>
+  {{ if .Params.toc }}
+  <aside class="doc-toc">
+    <div class="toc-sticky">
+      <h4 class="toc-heading">On this page</h4>
+      {{ .TableOfContents }}
+    </div>
+  </aside>
+  {{ end }}
+</article>
+{{ end }}

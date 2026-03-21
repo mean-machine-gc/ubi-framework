@@ -1,0 +1,32 @@
+baseURL = "https://mean-machine-gc.github.io/ubi-framework/"
+languageCode = "en"
+title = "UBI Framework"
+enableRobotsTXT = true
+enableGitInfo = true
+
+[params]
+  description = "A fundamental model for complex information processing systems"
+  author = "Giovanni Chiodi"
+
+[markup]
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = false
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    style = "github"
+    lineNos = false
+    noClasses = false
+
+[menu]
+  [[menu.main]]
+    name = "Framework"
+    url = "/framework/introduction/"
+    weight = 1
+  [[menu.main]]
+    name = "Toolkit"
+    url = "/toolkit/"
+    weight = 2

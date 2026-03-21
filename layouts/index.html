@@ -1,0 +1,30 @@
+{{ define "main" }}
+<section class="hero">
+  <div class="hero-layout">
+    <div class="hero-content">
+      <h1 class="hero-title">{{ .Site.Title }}</h1>
+      <p class="hero-subtitle">A <em>ubiquitous</em> framework for the AI era</p>
+      <div class="hero-actions">
+        <a href="{{ "framework/introduction/" | relURL }}" class="btn btn-primary">Read the Framework</a>
+        <a href="{{ "toolkit/" | relURL }}" class="btn btn-secondary">Explore the Toolkit</a>
+      </div>
+    </div>
+    <div class="hero-graph" aria-hidden="true">
+      {{ partial "graph-hero.html" . }}
+    </div>
+  </div>
+</section>
+
+<section class="home-section">
+  <div class="home-grid">
+    <div class="home-card">
+      <h2>Theoretical Framework</h2>
+      <p>A fundamental model for understanding complex information processing systems — and how it projects onto real-world disciplines from software architecture to governance.</p>
+    </div>
+    <div class="home-card">
+      <h2>Practical Toolkit</h2>
+      <p>Real tools, available on npm, that implement the framework. From agentic system analysis to specification-driven development.</p>
+    </div>
+  </div>
+</section>
+{{ end }}

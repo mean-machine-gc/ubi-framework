@@ -1,0 +1,4 @@
+{{ define "main" }}
+{{ $first := index .Pages.ByWeight 0 }}
+<meta http-equiv="refresh" content="0; url={{ $first.RelPermalink }}">
+{{ end }}

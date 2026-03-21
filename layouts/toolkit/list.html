@@ -1,0 +1,45 @@
+{{ define "main" }}
+<section class="toolkit-landing">
+  <div class="toolkit-hero">
+    <div class="toolkit-header">
+      <header class="page-header">
+        <h1>{{ .Title }}</h1>
+        {{ with .Description }}<p class="page-description">{{ . }}</p>{{ end }}
+        <p class="hero-subtitle-secondary"><em>Ubiquitous</em> solutions for AI-assisted SDLC</p>
+      </header>
+      <div class="prose">
+        {{ .Content }}
+      </div>
+    </div>
+    <div class="toolkit-graph" aria-hidden="true">
+      {{ partial "graph-hero.html" . }}
+    </div>
+  </div>
+  {{ if .Pages }}
+  <div class="tool-grid">
+    {{ range .Pages.ByWeight }}
+    <a href="{{ .RelPermalink }}" class="tool-card">
+      <div class="tool-card-header">
+        <h2 class="tool-name">{{ .Title }}</h2>
+        {{ with .Params.status }}
+        <span class="tool-status tool-status--{{ . }}">{{ . }}</span>
+        {{ end }}
+      </div>
+      {{ with .Description }}<p class="tool-description">{{ . }}</p>{{ end }}
+      {{ with .Params.npm }}
+      <code class="tool-npm">{{ . }}</code>
+      {{ end }}
+      {{ with .Params.tags }}
+      <div class="tool-tags">
+        {{ range . }}<span class="tool-tag">{{ . }}</span>{{ end }}
+      </div>
+      {{ end }}
+      {{ with .Params.projection }}
+      <div class="tool-projection">{{ . }}</div>
+      {{ end }}
+    </a>
+    {{ end }}
+  </div>
+  {{ end }}
+</section>
+{{ end }}
