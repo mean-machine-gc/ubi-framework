@@ -1,6 +1,6 @@
 baseURL = "https://mean-machine-gc.github.io/ubi-framework/"
 languageCode = "en"
-title = "UBI Framework"
+title = "Ubi."
 enableRobotsTXT = true
 enableGitInfo = true
 
@@ -34,3 +34,7 @@ enableGitInfo = true
     name = "Toolkit"
     url = "/toolkit/"
     weight = 3
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 4

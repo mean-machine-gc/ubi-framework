@@ -1,4 +1,5 @@
 {{ define "main" }}
 {{ $first := index .Pages.ByWeight 0 }}
-<meta http-equiv="refresh" content="0; url={{ $first.RelPermalink }}">
+<script>window.location.replace("{{ $first.RelPermalink }}");</script>
+<noscript><meta http-equiv="refresh" content="0; url={{ $first.RelPermalink }}"></noscript>
 {{ end }}

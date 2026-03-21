@@ -2,33 +2,16 @@
 <section class="hero">
   <div class="hero-layout">
     <div class="hero-content">
-      <h1 class="hero-title">{{ .Site.Title }}</h1>
+      <h1 class="hero-title">Ubi. Framework</h1>
       <p class="hero-subtitle">A <em>ubiquitous</em> framework for the AI era</p>
       <div class="hero-actions">
-        <a href="{{ "blueprint/introduction/" | relURL }}" class="btn btn-primary">Read the Blueprint</a>
+        <a href="{{ "blueprint/introduction/" | relURL }}" class="btn btn-primary">Blueprint</a>
         <a href="{{ "sdlc/projection/" | relURL }}" class="btn btn-secondary">SDLC</a>
-        <a href="{{ "toolkit/" | relURL }}" class="btn btn-secondary">Explore the Toolkit</a>
+        <a href="{{ "toolkit/" | relURL }}" class="btn btn-secondary">Toolkit</a>
       </div>
     </div>
     <div class="hero-graph" aria-hidden="true">
       {{ partial "graph-hero.html" . }}
-    </div>
-  </div>
-</section>
-
-<section class="home-section">
-  <div class="home-grid">
-    <div class="home-card">
-      <h2>Blueprint</h2>
-      <p>A fundamental model for understanding complex information processing systems, grounded in decision theory and bounded rationality.</p>
-    </div>
-    <div class="home-card">
-      <h2>SDLC</h2>
-      <p>Projecting the framework onto software delivery — from non-agentic to AI-assisted, across business analysis, architecture, development, and QA.</p>
-    </div>
-    <div class="home-card">
-      <h2>Toolkit</h2>
-      <p>Real tools, available on npm, that implement the framework. From agentic system analysis to specification-driven development.</p>
     </div>
   </div>
 </section>
