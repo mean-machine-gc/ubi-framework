@@ -3,6 +3,7 @@ title: "Canonical Socio-Technical Systems"
 description: "Projecting the cDS onto systems of humans, machines, and AI-agents"
 weight: 6
 toc: true
+draft: true
 ---
 
 *This section is a working draft.*

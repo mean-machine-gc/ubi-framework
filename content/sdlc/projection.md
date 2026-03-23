@@ -3,6 +3,7 @@ title: "SDLC as System Design and Delivery"
 description: "Software delivery as the design of socio-technical systems and the implementation of their machinery"
 weight: 1
 toc: true
+draft: true
 ---
 
 *This section is under development.*

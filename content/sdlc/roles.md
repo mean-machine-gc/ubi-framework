@@ -3,6 +3,7 @@ title: "Roles and Perspectives"
 description: "How SDLC roles map to activities on the decision graph"
 weight: 4
 toc: true
+draft: true
 ---
 
 *This section is under development.*

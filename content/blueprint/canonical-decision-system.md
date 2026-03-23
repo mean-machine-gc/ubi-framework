@@ -3,6 +3,7 @@ title: "Canonical Decision System"
 description: "A constrained, explorable model for socio-technical systems"
 weight: 4
 toc: true
+draft: true
 ---
 
 Ubi derives from the general and foundational Decision System model a primary canonical form, the Canonical Decision System (cDS), by applying targeted constraints and so reducing the degrees of freedom. The intent is to provide a canonical model where meaningful discussion and exploration is possible, in relation to real-life use cases.

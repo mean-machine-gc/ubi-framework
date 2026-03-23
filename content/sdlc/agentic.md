@@ -3,6 +3,7 @@ title: "Machinery Implementation"
 description: "Building and delivering the machine actors in a canonical socio-technical system"
 weight: 3
 toc: true
+draft: true
 ---
 
 *This section is under development.*

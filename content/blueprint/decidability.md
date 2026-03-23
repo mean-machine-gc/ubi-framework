@@ -3,6 +3,7 @@ title: "On Decidability, Verifiability, and the cDS"
 description: "Why the Canonical Decision System exists and what it guarantees"
 weight: 5
 toc: true
+draft: true
 ---
 
 *This section is a working draft — a theoretical exploration in progress.*

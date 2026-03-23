@@ -3,6 +3,7 @@ title: "Diagram Test"
 description: "Testing diagram rendering"
 weight: 99
 toc: true
+draft: true
 ---
 
 ## The General Decision Model

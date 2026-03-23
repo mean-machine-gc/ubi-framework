@@ -3,6 +3,7 @@ title: "System Design"
 description: "Designing canonical socio-technical systems for software delivery"
 weight: 2
 toc: true
+draft: true
 ---
 
 *This section is under development.*

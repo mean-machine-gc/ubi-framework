@@ -24,11 +24,11 @@ enableGitInfo = true
 [menu]
   [[menu.main]]
     name = "Blueprint"
-    url = "/blueprint/introduction/"
+    url = "/blueprint/summary/"
     weight = 1
   [[menu.main]]
     name = "SDLC"
-    url = "/sdlc/projection/"
+    url = "/sdlc/summary/"
     weight = 2
   [[menu.main]]
     name = "Toolkit"

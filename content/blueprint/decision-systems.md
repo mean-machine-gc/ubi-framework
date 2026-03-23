@@ -3,6 +3,7 @@ title: "Decision Systems"
 description: "How decisions compose into complex information processing networks"
 weight: 3
 toc: true
+draft: true
 ---
 
 Decisions do not live in isolation but they compose to generate an intricate network — a complex information processing system or Decision System. There are two mechanisms that allow decisions to combine with one another:

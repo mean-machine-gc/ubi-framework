@@ -3,6 +3,7 @@ title: "Introduction"
 description: "Origins, influences, and objectives of the Ubi framework"
 weight: 1
 toc: true
+draft: true
 ---
 
 Ubi is a general modelling and business analysis framework that bridges the gaps between business analysis and modern software architecture. It is primarily inspired by the work of Alberto Brandolini, Scott Wlaschin, and Herbert Simon — among many others. From the first, it borrows heavily from the EventStorming collaborative modelling technique and its mental model; from the second, it borrows ideas on functional composition and 'railway' programming; from the last, it borrows the bounded rationality theory and the decision model, as a unifying foundational model.

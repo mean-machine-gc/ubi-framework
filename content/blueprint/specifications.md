@@ -3,6 +3,7 @@ title: "Two Faces of Specification"
 description: "Structural specifications for validation, typed specifications for verification"
 weight: 7
 toc: true
+draft: true
 ---
 
 *This section is a working draft.*

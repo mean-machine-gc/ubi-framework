@@ -3,6 +3,7 @@ title: "The General Decision Model"
 description: "The foundational model of information processing as decision making"
 weight: 2
 toc: true
+draft: true
 ---
 
 Ubi conceptualises information processing as an intricate network of decisions that comply with the General Decision Model (GDM). The GDM is a high-variance model, with no other practical utility than providing the theoretical basis for more constrained and canonical models. Constraints can then be relaxed on canonical models for systematic study of scenarios and real-life applications.
