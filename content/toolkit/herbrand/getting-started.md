@@ -6,21 +6,103 @@ toc: true
 
 ## Installation
 
-```bash
-npm install herbrand
-```
-
-## Usage
+Add the MCP server to your AI assistant:
 
 ```bash
-npx herbrand analyse ./business-context
+# Claude Code CLI
+claude mcp add herbrand -- npx -y herbrand-mcp
+
+# Claude Desktop (claude_desktop_config.json)
+{
+  "mcpServers": {
+    "herbrand": {
+      "command": "npx",
+      "args": ["-y", "herbrand-mcp"]
+    }
+  }
+}
 ```
 
-Herbrand reads your business context and produces structured specifications through a multi-stage agentic pipeline.
+On startup, the MCP server installs skills, generates JSON schemas for YAML validation, configures VS Code schema support, watches for file changes, and launches the UI workbench.
 
-## Key Features
+## Project Structure
 
-- **Agentic analysis** — autonomous decomposition of business context into structured needs
-- **Specification generation** — produces formal, traceable business specifications
-- **Validation cycles** — built-in feedback loops that verify specification completeness and consistency
-- **Provenance tracking** — every specification traces back to the business context that generated it
+```
+my-project/
+  project.hb.yaml     # stream declarations
+  specs/
+    *.hb.yaml          # decision specs
+  project.schema.json  # auto-generated
+  decision.schema.json # auto-generated
+```
+
+## The Project File
+
+`project.hb.yaml` declares the vocabulary of your system:
+
+```yaml
+outcomes:         # past-tense domain events (snake_case)
+intents:          # imperative commands (snake_case)
+info:             # named information units (snake_case)
+outcomeRejects:   # failure constraint tags (snake_case)
+contexts:         # semantic boundaries (snake_case)
+modules:          # consistency boundaries (snake_case)
+aggregates:       # transactional boundaries (kebab-case)
+```
+
+## Decision Specs
+
+Each `.hb.yaml` file in `specs/` describes a single decision. There are two types:
+
+### Intent Decision
+
+A human (or automation) observes an outcome and decides to act:
+
+```yaml
+type: intent
+agent: human
+role: product_owner
+context: ordering
+module: order_management
+aggregate: order
+businessGoal: initiate the fulfilment process
+trigger: order_placed
+preconditions:
+  - description: Order has all required items
+    requiredInfo: [order_items, customer_address]
+    scenarios:
+      - description: Complete order with valid address
+producesIntent: fulfil_order
+```
+
+### Outcome Decision
+
+The system evaluates an intent and produces outcomes:
+
+```yaml
+type: outcome
+agent: machine
+context: ordering
+module: order_management
+aggregate: order
+trigger: fulfil_order
+shouldFailWith:
+  out_of_stock:
+    description: One or more items are not available
+    requiredInfo: [inventory_levels]
+    scenarios:
+      - description: Item quantity exceeds stock
+shouldSucceedWith:
+  order_fulfilled:
+    condition: always
+    description: All items allocated and shipment initiated
+    requiredInfo: [order_items, inventory_levels]
+    scenarios:
+      - description: All items in stock
+shouldAssert:
+  - tag: inventory_updated
+    description: Stock levels reflect allocated items
+    affectedInfo: [inventory_levels]
+```
+
+Key distinction: intent precondition failures are silent skips (non-events). Outcome constraint failures are rejection events that enter the stream and can trigger other decisions.

@@ -19,8 +19,8 @@
       {{ .Content }}
     </div>
     <nav class="page-nav">
-      {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" class="nav-prev">&larr; {{ .Title }}</a>{{ end }}
-      {{ with .NextInSection }}<a href="{{ .RelPermalink }}" class="nav-next">{{ .Title }} &rarr;</a>{{ end }}
+      {{ with .NextInSection }}<a href="{{ .RelPermalink }}" class="nav-prev">&larr; {{ .Title }}</a>{{ end }}
+      {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" class="nav-next">{{ .Title }} &rarr;</a>{{ end }}
     </nav>
   </div>
   {{ if .Params.toc }}

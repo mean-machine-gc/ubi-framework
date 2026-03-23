@@ -1,7 +1,7 @@
 ---
 title: "Protopal"
 description: "Event-sourced frontend agentic prototyping companion"
-weight: 5
+weight: 6
 npm: "protopal"
 status: "experimental"
 projection: "Design projection"

@@ -1,33 +1,56 @@
 ---
-title: "Agentic Model"
-description: "The impact of LLM-agents on the SDLC decision system"
+title: "Machinery Implementation"
+description: "Building and delivering the machine actors in a canonical socio-technical system"
 weight: 3
 toc: true
 ---
 
 *This section is under development.*
 
-The agentic SDLC model relaxes the non-agentic constraint by introducing LLM-agents as a third Actor type with stochastic rationality. This section explores what changes when LLM-agents participate in the SDLC decision system — which decisions they can take, what constraints shift, and what new verification requirements emerge.
+Machinery implementation is the second activity of SDLC: building the deterministic machines and LLM-agents that participate as actors in the designed socio-technical system.
 
-## Where Agents Enter
+## What Gets Implemented
 
-LLM-agents can participate in the SDLC decision system at multiple points:
+In a canonical socio-technical system, the machine actors are:
 
-| SDLC Function | Agent Role | Decision Type |
-|---|---|---|
-| Business Analysis | Specification generation, context synthesis | Intent Decisions (assisted) |
-| Architecture | Alternative evaluation, pattern suggestion | Intent Decisions (assisted) |
-| Development | Code generation, implementation | Bare Instructions (delegated) |
-| QA | Test generation, defect detection | View Decisions (autonomous) |
+- **Outcome Decision evaluators** — code that receives an intent, evaluates constraints, checks conditions, and produces outcomes. This is the core business logic.
+- **View Decision computers** — code that observes outcomes and computes derived views for human actors.
+- **Automations** — code that observes outcomes and produces intents according to predefined reactive policies.
+- **LLM-agent integrations** — where AI-agents participate in intent decisions or bare instructions, the integration layer that connects them to the decision system with appropriate constraints.
 
-## Stochastic Rationality
+## Spec-Driven Implementation
 
-The key difference between a Deterministic Machine and an LLM-agent is the nature of their Agency. A Deterministic Machine always produces the same output for the same input — its Procedure is fixed. An LLM-agent's Procedure is stochastic — the same input may produce different outputs across invocations.
+The decision graph from system design defines *what* each machine actor must do. Implementation is the process of building code that satisfies those specifications.
 
-This has structural consequences for the cDS: invariants that hold under deterministic execution may not hold under stochastic execution. The canonical operative procedures remain the same, but the *confidence* in their outcomes changes.
+The implementation workflow:
 
-## Verification as First-Class Concern
+1. **Model** — design the domain types that represent the information units in the decision graph
+2. **Specify** — translate the decision constraints and outcomes into typed behavioural specs
+3. **Generate examples** — produce the verification examples that exercise all paths
+4. **Implement** — write code until all examples pass
+5. **Document** — generate documentation from the specs
 
-In the non-agentic model, verification is a quality assurance function. In the agentic model, verification becomes a structural requirement at every point where an LLM-agent makes a decision. This is the theoretical foundation for specification-driven development — the specification is the constraint set that governs the agent's decision, and verification is the mechanism that ensures the constraint set holds.
+Each step narrows freedom: the decision graph constrains the specs, the specs constrain the implementation, the examples verify the constraints hold. The machinery is verifiable by construction — not because the developer is trusted, but because the constraint chain is complete.
 
-This is precisely what the UBI Toolkit implements: Herbrand constrains the agent's business analysis decisions; VibeRail constrains the agent's development decisions; both require verification at each stage.
+## The Role of AI-Agents in Implementation
+
+LLM-agents can participate in machinery implementation as delegated actors — generating code, suggesting implementations, producing test scaffolding. The verifiability guarantee makes this safe:
+
+- The agent generates code (stochastic, non-deterministic)
+- The specs verify the code (deterministic, always terminates)
+- If verification fails, the agent receives structured feedback (which constraints failed, which examples didn't pass)
+- The loop repeats until verification passes
+
+The agent doesn't need to be correct on the first attempt. It needs to be working within a constraint structure that catches errors. This is what "guardrails for vibe coding" means in practice.
+
+## From Design to Delivery
+
+The full SDLC path:
+
+1. **Herbrand** produces the decision graph (system design)
+2. **Phenomena** generates verification examples from the decision graph
+3. **VibeRail** governs implementation of the machinery against the specs and examples
+4. The implemented machinery is deployed — outcome decisions evaluate, views compute, automations react
+5. The running system *is* the canonical socio-technical system that was designed
+
+The delivered software is not an approximation of the design. It is the machinery layer of a formally specified, deterministically verifiable decision system.

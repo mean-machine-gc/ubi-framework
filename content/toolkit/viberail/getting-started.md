@@ -10,19 +10,93 @@ toc: true
 npm install viberail
 ```
 
-## Usage
+For AI-assisted workflows, add the MCP server:
 
 ```bash
-npx viberail init
-npx viberail generate --spec ./specs
+# Claude Code CLI
+claude mcp add viberail -- npx -y viberail-mcp
+
+# Claude Desktop (claude_desktop_config.json)
+{
+  "mcpServers": {
+    "viberail": {
+      "command": "npx",
+      "args": ["-y", "viberail-mcp"]
+    }
+  }
+}
 ```
 
-VibeRail reads your specifications and generates implementation artefacts through a constrained, verifiable pipeline.
+For the visual workbench:
 
-## Key Features
+```bash
+npm install -g viberail-ui
+# or run directly
+npx viberail-ui --folder ./my-project
+```
 
-- **Spec-driven generation** — AI-assisted code generation governed by explicit specifications, not freeform prompts
-- **Opt-in agency** — the developer controls how much autonomy the AI has at each processing stage
-- **Verification built-in** — every generated artefact is verified against its specification before acceptance
-- **Traceability** — full provenance from specification to implementation to test result
-- **Framework integration** — specifications produced by Herbrand can flow directly into VibeRail's pipeline
+## Project Setup
+
+Initialize a project with the MCP tool:
+
+```bash
+# Via MCP
+init-project --projectPath ./my-project
+```
+
+This installs viberail, adds `vr:gen` and `vr:check` npm scripts, scaffolds a `docs/` directory, and copies skills to `.claude/skills/`.
+
+## CLI Tools
+
+```bash
+# Generate documentation and dependency graphs from specs
+npx viberail gen
+
+# Validate specs across six dimensions
+npx viberail check
+```
+
+`viberail check` validates: example completeness, assertion strength, orphan detection, failure union drift, step-implementation sync, and inheritance completeness. Exits with code 1 on errors.
+
+## Quick Example
+
+Define a spec:
+
+```typescript
+import { Spec, SpecFn } from 'viberail'
+
+type ParseEmail = SpecFn<
+  { raw: string },           // input
+  { email: string },         // output
+  'invalid_format',          // failure types
+  'parsed'                   // success types
+>
+
+export const parseEmailSpec: Spec<ParseEmail> = {
+  shouldFailWith: {
+    invalid_format: [
+      { input: { raw: 'not-an-email' } }
+    ]
+  },
+  shouldSucceedWith: {
+    parsed: [
+      { input: { raw: 'user@example.com' }, output: { email: 'user@example.com' } }
+    ]
+  },
+  shouldAssert: [
+    (result) => result.value.email.includes('@')
+  ]
+}
+```
+
+Generate tests automatically:
+
+```typescript
+import { testSpec } from 'viberail'
+import { parseEmailSpec } from './parse-email.spec'
+import { parseEmail } from './parse-email'
+
+testSpec('parseEmail', parseEmailSpec, parseEmail)
+```
+
+This generates Jest tests from your spec examples and assertions — no manual test writing.

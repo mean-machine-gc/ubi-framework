@@ -4,20 +4,39 @@ weight: 1
 toc: true
 ---
 
-## Overview
+Herbrand is a decision-first business analysis framework that models organisational processes as chains of bounded decisions. It reconciles business analysis with CQRS and Event Sourcing patterns, grounding both in the same decision model.
 
-Herbrand is an agentic system that automates the transformation of business context into structured, validated business specifications. It implements the UBI Framework's Business Analysis projection — mapping organisational needs through a sequence of well-defined transformation functions to produce traceable, auditable specifications.
+The fundamental insight: every business system is two loops — Outcomes trigger Intent Decisions that produce Intents, which trigger Outcome Decisions that produce Outcomes. This is the reactive engine that drives all business behaviour.
 
-Named after Jacques Herbrand, whose work in mathematical logic established foundations for automated reasoning.
+The name combines its two primary influences: **Herb**ert Simon (bounded rationality, decision theory) and Alberto Br**and**olini (EventStorming, collaborative modelling). The accidental coincidence with Jacques Herbrand — the mathematician whose work on decidability established that constrained formal systems can be reduced to finite, checkable structures — turned out to be more than nominal. It propelled further theoretical research into why the canonical decision system's constraints guarantee decidability and verifiability regardless of actor type, grounding the framework in formal foundations that were not originally anticipated. See [On Decidability, Verifiability, and the cDS](/ubi-framework/blueprint/decidability/) in the Blueprint.
 
-## How It Relates to the Framework
+## How It Works
 
-In the fundamental model, business analysis is a sequence of transformation functions that progressively refine information units from stakeholder concerns to solution specifications. Herbrand makes these transformations explicit and executable:
+Business analysts and AI agents work in a collaborative loop:
 
-| Framework Concept | Herbrand Implementation |
-|---|---|
-| Information units | Business context documents, requirements, specifications |
-| Transformation functions | Agent-driven analysis, decomposition, validation |
-| Processing stages | Context → Needs → Requirements → Specifications |
-| Invariants | Traceability, stakeholder alignment, completeness |
-| Feedback loops | Iterative refinement through validation cycles |
+1. **Conversations** reveal decisions — someone does X, the system checks Y, when X happens Y reacts
+2. **The agent writes YAML specs** — plain, readable, no code. Each spec describes a single decision: its trigger, its preconditions or constraints, its outcomes
+3. **Herbrand processes the specs** — parses, validates, builds a decision graph, lints for inconsistencies at both the spec level and the system level
+4. **Business outputs are extracted** — user stories, acceptance criteria, decision tables, scenarios — all derived from the graph, not written by hand
+5. **Feedback loops** — lint results and generated outputs reveal gaps, contradictions, and missing paths. The cycle repeats
+
+The human never touches the graph or the code. They reason about business. The agent writes YAML. Herbrand does the heavy lifting.
+
+## The Ecosystem
+
+The monorepo contains:
+
+- **@herbrand/core** — parsing, validation, graph construction, linting, user story extraction
+- **@herbrand/signals** — reactive state management, file watching, cascading recomputation
+- **herbrand-mcp** — MCP server with 3 tools and 6 skills for AI-assisted business analysis
+- **herbrand-ui** — React workbench with specs view, decision graph visualization, and business output view
+
+## Two Levels of Validation
+
+Herbrand validates at two distinct levels:
+
+**Spec-level linting** — 15 rules checking individual spec quality: missing triggers, missing choices, no rejection paths, missing descriptions, missing roles on intent decisions, missing business goals, missing scenarios.
+
+**Behaviour-level linting** — system-wide graph analysis: orphan outcomes, dead-end outcomes, unconsumed intents, unhandled rejections, information never written, information never read, competing outcome decisions, duplicate intent decisions, aggregate boundary hints.
+
+This two-level approach catches both local errors (a spec is incomplete) and systemic errors (the system as a whole has structural problems).

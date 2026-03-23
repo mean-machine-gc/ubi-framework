@@ -1,7 +1,7 @@
 ---
 title: "Atlas"
 description: "Decision graph exploration and analysis tool"
-weight: 4
+weight: 5
 npm: "atlas"
 status: "experimental"
 projection: "Architecture projection"

@@ -1,34 +1,70 @@
 ---
-title: "The SDLC Projection"
-description: "Mapping the Canonical Decision System onto software delivery"
+title: "SDLC as System Design and Delivery"
+description: "Software delivery as the design of socio-technical systems and the implementation of their machinery"
 weight: 1
 toc: true
 ---
 
 *This section is under development.*
 
-The Canonical Decision System provides a domain-agnostic model of socio-technical decision making. This section projects that model onto the software delivery lifecycle — mapping its abstract constructs to the concrete actors, decisions, and information flows of software organisations.
+## The SDLC Reframed
 
-## Actors in SDLC
+The software delivery lifecycle is conventionally understood as a process: requirements → design → implementation → testing → deployment. The Ubi. framework offers a different reading:
 
-In the general cDS, Actors are typed as Human, Deterministic Machine, or LLM-agent. In the SDLC projection, these acquire specific roles:
+**Software delivery is two things:**
 
-| cDS Actor | SDLC Roles |
-|---|---|
-| Human | Product owners, business analysts, architects, developers, testers, operations |
-| Deterministic Machine | Build systems, CI/CD pipelines, linters, type checkers, test runners, deployment orchestrators |
-| LLM-agent | AI coding assistants, specification generators, test generators, analysis agents |
+1. **Designing a canonical socio-technical system** — defining what decisions exist, who makes them, how they connect, what constraints govern them, what information flows between them
+2. **Implementing and delivering the machinery** — building the deterministic machines and LLM-agents that participate as actors in that system
 
-## Streams in SDLC
+Everything in SDLC is one of these two activities. Business analysis, domain modelling, architecture — these are *system design*. Development, testing, deployment — these are *machinery implementation and delivery*.
 
-The canonical architecture's Intent and Outcome Streams map to the familiar artefacts of software delivery:
+## System Design
 
-| cDS Construct | SDLC Manifestation |
-|---|---|
-| Intent Stream | Requirements, user stories, design decisions, architectural decisions, task assignments |
-| Outcome Stream | Specifications, implementations, test results, build artefacts, deployment states |
-| Views | Dashboards, reports, documentation, architectural views |
+Designing the socio-technical system means answering:
 
-## Topological Boundaries
+- What are the decisions in this system?
+- What triggers each decision?
+- What are the possible outcomes (closed choice space)?
+- What constraints govern each decision?
+- What information does each decision need?
+- Who makes each decision — human, machine, or LLM-agent?
+- How do decisions connect — what reactive chains exist?
 
-The stream sub-divisions of the cDS correspond to the organisational and process boundaries in software delivery — the separation between analysis and architecture, between architecture and development, between development and operations. These boundaries are not arbitrary; they emerge from the decision graph's topology.
+The output of system design is a **decision graph** — the complete topology of the socio-technical system. This is what Herbrand produces: structured YAML specifications of intent and outcome decisions, validated and connected into a navigable graph.
+
+System design is not a one-time phase. It is continuous — every conversation with a stakeholder, every discovered edge case, every new requirement refines the decision graph.
+
+## Machinery Implementation
+
+Once the socio-technical system is designed, the machine actors need to be built. In a canonical socio-technical system:
+
+- **Outcome Decisions** are assigned to deterministic machines — these must be implemented as code that evaluates constraints, checks conditions, and produces outcomes
+- **View Decisions** are assigned to deterministic machines — these must be implemented as code that computes and returns views
+- **Automations** (machine-assigned Intent Decisions) must be implemented as reactive policies
+
+This is what VibeRail does: it takes behavioural specifications and governs the implementation of the machinery that executes them. The specs define the constraints. The implementation is the machine. The tests verify that the machine satisfies the constraints.
+
+## The Pipeline
+
+The SDLC pipeline maps directly to the toolkit:
+
+| SDLC Activity | What It Does | Tool |
+|---|---|---|
+| Domain discovery | Identify decisions, actors, streams | Herbrand |
+| System design | Specify and validate the decision graph | Herbrand |
+| Example generation | Produce verification examples from specs | Phenomena |
+| Machinery implementation | Build and verify machine actors | VibeRail |
+| Graph exploration | Analyse system topology and boundaries | Atlas |
+| Interface prototyping | Prototype human-facing interactions | Protopal |
+
+## Roles Reframed
+
+Traditional SDLC roles map to activities within this framing:
+
+- **Business Analyst** — designs the socio-technical system (decision discovery, specification, validation)
+- **Software Architect** — designs the boundaries and topology of the decision graph (aggregates, modules, contexts, stream organisation)
+- **Developer** — implements the machinery (outcome decisions, view decisions, automations as code)
+- **QA Engineer** — verifies that the machinery satisfies the constraints (the verification examples, coverage analysis)
+- **Product Owner** — the primary human actor in the designed system, making intent decisions
+
+These are not separate disciplines working in sequence. They are different perspectives on the same decision graph, operating concurrently.

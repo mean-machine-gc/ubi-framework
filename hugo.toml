@@ -17,7 +17,7 @@ enableGitInfo = true
     [markup.goldmark.renderer]
       unsafe = true
   [markup.highlight]
-    style = "github"
+    style = "monokailight"
     lineNos = false
     noClasses = false
 
