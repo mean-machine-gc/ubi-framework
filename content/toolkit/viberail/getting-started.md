@@ -12,11 +12,17 @@ npm install viberail
 
 For AI-assisted workflows, add the MCP server:
 
-```bash
-# Claude Code CLI
-claude mcp add viberail -- npx -y viberail-mcp
+### Claude Code CLI
 
-# Claude Desktop (claude_desktop_config.json)
+```bash
+claude mcp add viberail -- npx -y viberail-mcp
+```
+
+### Claude Desktop
+
+Add to `claude_desktop_config.json`:
+
+```json
 {
   "mcpServers": {
     "viberail": {
@@ -25,6 +31,48 @@ claude mcp add viberail -- npx -y viberail-mcp
     }
   }
 }
+```
+
+### OpenCode
+
+```bash
+opencode mcp add viberail -- npx -y viberail-mcp
+```
+
+### Cursor
+
+Add to `.cursor/mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "viberail": {
+      "command": "npx",
+      "args": ["-y", "viberail-mcp"]
+    }
+  }
+}
+```
+
+### GitHub Copilot (VS Code)
+
+Add to `.vscode/mcp.json` in your project root:
+
+```json
+{
+  "servers": {
+    "viberail": {
+      "command": "npx",
+      "args": ["-y", "viberail-mcp"]
+    }
+  }
+}
+```
+
+### Manual
+
+```bash
+npx viberail-mcp
 ```
 
 For the visual workbench:

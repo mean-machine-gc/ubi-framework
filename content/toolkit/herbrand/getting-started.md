@@ -8,11 +8,17 @@ toc: true
 
 Add the MCP server to your AI assistant:
 
-```bash
-# Claude Code CLI
-claude mcp add herbrand -- npx -y herbrand-mcp
+### Claude Code CLI
 
-# Claude Desktop (claude_desktop_config.json)
+```bash
+claude mcp add herbrand -- npx -y herbrand-mcp
+```
+
+### Claude Desktop
+
+Add to `claude_desktop_config.json`:
+
+```json
 {
   "mcpServers": {
     "herbrand": {
@@ -21,6 +27,48 @@ claude mcp add herbrand -- npx -y herbrand-mcp
     }
   }
 }
+```
+
+### OpenCode
+
+```bash
+opencode mcp add herbrand -- npx -y herbrand-mcp
+```
+
+### Cursor
+
+Add to `.cursor/mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "herbrand": {
+      "command": "npx",
+      "args": ["-y", "herbrand-mcp"]
+    }
+  }
+}
+```
+
+### GitHub Copilot (VS Code)
+
+Add to `.vscode/mcp.json` in your project root:
+
+```json
+{
+  "servers": {
+    "herbrand": {
+      "command": "npx",
+      "args": ["-y", "herbrand-mcp"]
+    }
+  }
+}
+```
+
+### Manual
+
+```bash
+npx herbrand-mcp
 ```
 
 On startup, the MCP server installs skills, generates JSON schemas for YAML validation, configures VS Code schema support, watches for file changes, and launches the UI workbench.
