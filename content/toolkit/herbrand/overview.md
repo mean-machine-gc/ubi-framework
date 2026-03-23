@@ -12,15 +12,29 @@ The name combines its two primary influences: **Herbert Simon** (bounded rationa
 
 ## How It Works
 
-Business analysts and AI agents work in a collaborative loop:
+You just talk. Describe your domain naturally — "the customer picks products, adds them to the cart, then checks out." Behind the scenes, two agents coordinate through a shared scratchpad:
 
-1. **Conversations** reveal decisions — a Business Analyst can have a conversation with the agent on something he/she is working on; it might be a live relay of a conversation with a domain expert or client, or a subsequent relay to explore the findings and produce structured artifacts
-2. **The agent writes YAML specs** — plain, readable, no code. Each spec describes a single decision: its trigger, its preconditions or constraints, its outcomes
-3. **Herbrand processes the specs** — parses, validates, builds a decision graph, lints for inconsistencies at both the spec level and the system level
-4. **Business outputs are extracted** — user stories, acceptance criteria, decision tables, scenarios — all derived from the graph, not written by hand
-5. **Feedback loops** — lint results and generated outputs reveal gaps, contradictions, and missing paths. The cycle repeats
+```
+You ←→ Conversation Agent ←→ Scratchpad ←→ Spec Agent ←→ .hb.yaml specs
+         (talks to you)        (shared)      (background)    (validated)
+```
 
-The human never touches the graph or the code. They reason about business. The agent writes YAML. Herbrand does the heavy lifting.
+1. **You talk**, the Conversation Agent writes observations to the scratchpad
+2. **When enough detail exists** (who decides, what triggers it, what can fail, what it produces), the entry gets marked ready
+3. **The Spec Agent picks up** ready entries, writes the YAML specs, validates them with Herbrand, and marks them formalized
+4. **When you want to see** what's been captured, the Conversation Agent reads the generated user stories and presents them back in plain language
+
+No manual actions are needed for the basic flow. You just talk. The agents coordinate automatically. Optional slash commands let you review, challenge, discover, or refine on demand.
+
+### What you'll never see
+
+- YAML files, spec syntax, or framework terminology
+- Validation errors or pipeline results (the Spec Agent handles those silently)
+- Info units, preconditions, assertions, triggers — the agents use these internally but speak to you in domain language
+
+### When the Spec Agent gets stuck
+
+If a scratchpad entry is too vague to formalize, the Spec Agent marks it `needs-clarification` and writes a question back to the scratchpad. Next time you interact, the Conversation Agent picks up that question and weaves it naturally into the conversation. You answer in plain language, the entry gets updated, and the Spec Agent formalizes it on the next run.
 
 ## The Ecosystem
 
@@ -28,7 +42,7 @@ The monorepo contains:
 
 - **@herbrand/core** — parsing, validation, graph construction, linting, user story extraction
 - **@herbrand/signals** — reactive state management, file watching, cascading recomputation
-- **herbrand-mcp** — MCP server with 3 tools and 6 skills for AI-assisted business analysis
+- **herbrand-mcp** — MCP server with 3 tools, interactive skills, and a two-agent architecture (Conversation Agent + Spec Agent) for AI-assisted business analysis
 - **herbrand-ui** — React workbench with specs view, decision graph visualization, and business output view
 
 ## Two Levels of Validation

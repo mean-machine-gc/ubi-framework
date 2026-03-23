@@ -73,6 +73,23 @@ npx herbrand-mcp
 
 On startup, the MCP server installs skills, generates JSON schemas for YAML validation, configures VS Code schema support, watches for file changes, and launches the UI workbench.
 
+## One-Time Setup
+
+After installing Herbrand for the first time, **restart your session**. The subagents (including the background Spec Agent) load at startup, so they won't be available until the next session.
+
+## Using Herbrand
+
+Once set up, just start talking. Describe your domain naturally and the Conversation Agent will capture decisions, ask clarifying questions, and coordinate with the background Spec Agent to produce validated specs.
+
+No manual actions are needed for the basic flow. When you want more control, these optional commands are available:
+
+| Command | When | What happens |
+|---|---|---|
+| `/herbrand-review` | "Show me what we have" | Agent ensures specs are current, then presents the model in plain language |
+| `/herbrand-challenge` | "What are we missing?" | Agent reads pipeline warnings and asks you about gaps, one or two at a time |
+| `/herbrand-discover` | Starting a new topic | Agent enters structured discovery mode with targeted questions |
+| `/herbrand-refine` | "Actually, that's not quite right" | Agent captures the correction and delegates the fix |
+
 ## Project Structure
 
 ```
