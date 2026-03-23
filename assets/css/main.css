@@ -989,7 +989,6 @@ body {
 }
 
 .tool-card--disabled {
-  opacity: 0.45;
   pointer-events: none;
 }
 
@@ -997,8 +996,22 @@ body {
   color: var(--text-tertiary);
 }
 
+.tool-card--disabled .tool-description {
+  color: var(--text-tertiary);
+}
+
+.tool-card--disabled .tool-npm {
+  color: var(--text-tertiary);
+  background: transparent;
+}
+
 .tool-card--disabled .tool-tag {
-  opacity: 0.5;
+  background: var(--text-tertiary);
+  opacity: 0.3;
+}
+
+.tool-card--disabled .tool-projection {
+  opacity: 0.4;
 }
 
 .tool-description {
