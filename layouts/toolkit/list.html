@@ -16,11 +16,11 @@
       {{ range .Sections.ByWeight }}
       {{ $target := .RelPermalink }}
       {{ with index .Pages.ByWeight 0 }}{{ $target = .RelPermalink }}{{ end }}
-      <a href="{{ $target }}" class="tool-card">
+      <a href="{{ $target }}" class="tool-card{{ if eq .Params.status "coming soon" }} tool-card--disabled{{ end }}">
         <div class="tool-card-header">
           <h2 class="tool-name">{{ .Title }}</h2>
           {{ with .Params.status }}
-          <span class="tool-status tool-status--{{ . }}">{{ . }}</span>
+          <span class="tool-status tool-status--{{ . | urlize }}">{{ . }}</span>
           {{ end }}
         </div>
         {{ with .Description }}<p class="tool-description">{{ . }}</p>{{ end }}

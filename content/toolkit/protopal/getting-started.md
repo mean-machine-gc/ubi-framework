@@ -2,6 +2,7 @@
 title: "Getting Started"
 weight: 2
 toc: true
+draft: true
 ---
 
 ## Installation

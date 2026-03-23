@@ -983,6 +983,24 @@ body {
   color: var(--text-tertiary);
 }
 
+.tool-status--coming-soon {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.tool-card--disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.tool-card--disabled .tool-name {
+  color: var(--text-tertiary);
+}
+
+.tool-card--disabled .tool-tag {
+  opacity: 0.5;
+}
+
 .tool-description {
   color: var(--text-secondary);
   font-size: var(--text-base);
