@@ -8,7 +8,7 @@ Herbrand is a decision-first business analysis framework that models organisatio
 
 The fundamental insight: every business system is two loops — Outcomes trigger Intent Decisions that produce Intents, which trigger Outcome Decisions that produce Outcomes. This is the reactive engine that drives all business behaviour.
 
-The name combines its two primary influences: **Herb**ert Simon (bounded rationality, decision theory) and Alberto Br**and**olini (EventStorming, collaborative modelling). The accidental coincidence with Jacques Herbrand — the mathematician whose work on decidability established that constrained formal systems can be reduced to finite, checkable structures — turned out to be more than nominal. It propelled further theoretical research into why the canonical decision system's constraints guarantee decidability and verifiability regardless of actor type, grounding the framework in formal foundations that were not originally anticipated. See [On Decidability, Verifiability, and the cDS](/ubi-framework/blueprint/decidability/) in the Blueprint.
+The name combines its two primary influences: **Herb**ert Simon (bounded rationality, decision theory) and Alberto Br**and**olini (EventStorming, collaborative modelling). Accidentallly it coincides with Jacques Herbrand — the mathematician whose work on decidability lays the foundation for the field of formal verification, i.e. compliance of systems behaviour to their specifications.
 
 ## How It Works
 
