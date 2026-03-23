@@ -14,7 +14,7 @@ The name combines its two primary influences: **Herb**ert Simon (bounded rationa
 
 Business analysts and AI agents work in a collaborative loop:
 
-1. **Conversations** reveal decisions — someone does X, the system checks Y, when X happens Y reacts
+1. **Conversations** reveal decisions — a Business Analyst can have a conversation about with the agent on something he/she is working on; it might be a live relay of a conversation with a domain expert or client, or a subsequent relay to explore the findings and produces structured artifacts.
 2. **The agent writes YAML specs** — plain, readable, no code. Each spec describes a single decision: its trigger, its preconditions or constraints, its outcomes
 3. **Herbrand processes the specs** — parses, validates, builds a decision graph, lints for inconsistencies at both the spec level and the system level
 4. **Business outputs are extracted** — user stories, acceptance criteria, decision tables, scenarios — all derived from the graph, not written by hand
