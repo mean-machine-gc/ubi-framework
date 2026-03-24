@@ -4,53 +4,105 @@ weight: 1
 toc: true
 ---
 
-Herbrand is a decision-first business analysis framework that models organisational processes as chains of bounded decisions. It reconciles business analysis with CQRS and Event Sourcing patterns, grounding both in the same decision model.
+Herbrand is a decision-first business analysis framework that models systems as chains of decisions. It bridges Herbert Simon's decision theory with CQRS/Event Sourcing architecture patterns, giving business analysts and software architects a shared language.
 
-The fundamental insight: every business system is two loops — Outcomes trigger Intent Decisions that produce Intents, which trigger Outcome Decisions that produce Outcomes. This is the reactive engine that drives all business behaviour.
+The name combines its two primary influences: **Herbert Simon** (bounded rationality, decision theory) and **Alberto Brandolini** (EventStorming, collaborative domain modelling). It also coincides with Jacques Herbrand — the mathematician whose work on decidability lays the foundation for formal verification.
 
-The name combines its two primary influences: **Herbert Simon** (bounded rationality, decision theory) and **Alberto Brandolini** (EventStorming, collaborative modelling). Accidentallly it coincides with Jacques Herbrand — the mathematician whose work on decidability lays the foundation for the field of formal verification, i.e. compliance of systems behaviour to their specifications.
+## The Core Insight
 
-## How It Works
-
-You just talk. Describe your domain naturally — "the customer picks products, adds them to the cart, then checks out." Behind the scenes, two agents coordinate through a shared scratchpad:
+Every business system is a reactive loop of decisions:
 
 ```
-You ←→ Conversation Agent ←→ Scratchpad ←→ Spec Agent ←→ .hb.yaml specs
-         (talks to you)        (shared)      (background)    (validated)
+Outcomes → Policies → Intents → Operations → Outcomes → ...
 ```
 
-1. **You talk**, the Conversation Agent writes observations to the scratchpad
-2. **When enough detail exists** (who decides, what triggers it, what can fail, what it produces), the entry gets marked ready
-3. **The Spec Agent picks up** ready entries, writes the YAML specs, validates them with Herbrand, and marks them formalized
-4. **When you want to see** what's been captured, the Conversation Agent reads the generated user stories and presents them back in plain language
+**Policies** listen to outcomes, evaluate preconditions against available information, and decide *what should happen* by emitting an intent. If preconditions aren't met, they silently drop — no error, no noise.
 
-No manual actions are needed for the basic flow. You just talk. The agents coordinate automatically. Optional slash commands let you review, challenge, discover, or refine on demand.
+**Operations** listen to intents, evaluate success constraints, and determine *what has happened* by producing outcomes. If any constraint fails, the operation produces an explicit failure outcome listing the violations.
 
-### What you'll never see
+This maps directly to CQRS: intents are commands, outcomes are events. But the language comes from behavioural science, not software engineering — making it accessible to business analysts and domain experts.
 
-- YAML files, spec syntax, or framework terminology
-- Validation errors or pipeline results (the Spec Agent handles those silently)
-- Info units, preconditions, assertions, triggers — the agents use these internally but speak to you in domain language
+## What Herbrand Does
 
-### When the Spec Agent gets stuck
+You describe your domain as decisions. Herbrand derives everything else:
 
-If a scratchpad entry is too vague to formalize, the Spec Agent marks it `needs-clarification` and writes a question back to the scratchpad. Next time you interact, the Conversation Agent picks up that question and weaves it naturally into the conversation. You answer in plain language, the entry gets updated, and the Spec Agent formalizes it on the next run.
+- **Info points** — discovered from what decisions need to read and write. The data model is an output, not an input.
+- **Views** — projections of info points that each decision needs. For human actors, these are UI requirements. For AI agents, these are prompt context. For machines, these are queries.
+- **Integration points** — where reactive chains cross execution context boundaries.
+- **User stories and automations** — derived from policy→operation pairs with full acceptance criteria, decision tables, and scenarios.
+- **Graph analysis** — bottleneck detection, boundary alignment, clustering, critical paths — powered by graph algorithms.
 
 ## The Ecosystem
 
-The monorepo contains:
+```
+@herbrand/core     — types, schemas, graph, linting, analysis, store
+herbrand-mcp       — MCP server with tools and skills for AI-assisted BA
+herbrand-ui        — React workbench with live YAML file watching
+```
 
-- **@herbrand/core** — parsing, validation, graph construction, linting, user story extraction
-- **@herbrand/signals** — reactive state management, file watching, cascading recomputation
-- **herbrand-mcp** — MCP server with 3 tools, interactive skills, and a two-agent architecture (Conversation Agent + Spec Agent) for AI-assisted business analysis
-- **herbrand-ui** — React workbench with specs view, decision graph visualization, and business output view
+### @herbrand/core
 
-## Two Levels of Validation
+The foundation. Contains:
+- **Zod schemas** as the single source of truth for all authored types (Policy, Operation, Actor, ExecutionContext, ProcessDefinition)
+- **Decision graph** derivation with signal nodes, view nodes, and side-effect tracking
+- **Three lint scopes**: spec-level (13 rules, single decision), system-level (5 rules, graph-blocking), graph-level (18 rules, topology analysis)
+- **14 graph analyses** via graphology: community detection, betweenness centrality, clustering, critical paths, temporal ordering
+- **Business view** derivation: user stories for human actors, automation rules for AI/machine actors
+- **Reactive store** (preact/signals-core) that chains the full pipeline: files → validation → system → lint → graph → analysis → business view
+- **JSON Schema generation** for VS Code YAML validation
 
-Herbrand validates at two distinct levels:
+### herbrand-mcp
 
-**Spec-level linting** — 15 rules checking individual spec quality: missing triggers, missing choices, no rejection paths, missing descriptions, missing roles on intent decisions, missing business goals, missing scenarios.
+An MCP server that gives AI agents structured access to Herbrand's computed artifacts:
+- **7 tools**: install_skills, launch_ui, get_system_overview, get_lint_results, get_business_view, get_user_story, get_graph_insights
+- **5 skills**: primer, explore-process, review-system, challenge-model, enrich
 
-**Behaviour-level linting** — system-wide graph analysis: orphan outcomes, dead-end outcomes, unconsumed intents, unhandled rejections, information never written, information never read, competing outcome decisions, duplicate intent decisions, aggregate boundary hints.
+### herbrand-ui
 
-This two-level approach catches both local errors (a spec is incomplete) and systemic errors (the system as a whole has structural problems).
+A React workbench with four views:
+- **Specification** — three-column layout: actors/contexts/decisions (left), decision cards (center), info universe (right). Process filtering across all columns.
+- **Graph** — interactive decision graph with actor×context swimlanes, stacked outcomes, side-effect toggle, and a graph analysis panel.
+- **Business** — user story and automation cards with tabbed acceptance criteria, decision tables, scenarios, and view requirements.
+- **Document** — rendered Markdown documentation with system overview and per-process narratives.
+
+## The Data Transformation Pipeline
+
+```
+YAML files
+  → Zod validation (schema errors)
+  → Build system (enrich with derived artifacts)
+  → Spec lint (per-decision, 13 rules)
+  → System lint (cross-decision, 5 rules — gates graph building)
+  → Derive decision graph (nodes: signals, policies, operations, views)
+  → Graph lint (topology, 18 rules — gates analysis)
+  → Graph analysis (14 analyses: boundaries, impact, clustering, flow)
+  → Business view (user stories, automations, decision tables)
+  → Document enrichment (prose Markdown via LLM)
+```
+
+Each stage gates the next. Spec errors block system building. System errors block graph derivation. Graph errors block analysis. This ensures the agent fixes problems in order of severity.
+
+## Key Concepts
+
+### Execution Contexts
+
+Where decisions happen — the "system" in EventStorming terms:
+- **Software contexts** (internal or external) — host automated and agentic decisions
+- **Institutional contexts** (role-authority, ceremony, department, committee) — host human decisions
+
+### Actors
+
+Who executes each decision:
+- **Human** actors (with roles) — evaluate with judgment
+- **LLM** actors — evaluate with AI assistance
+- **Machine** actors — evaluate deterministically
+
+Context-actor compatibility: institutional contexts require human actors, software contexts require LLM or machine actors.
+
+### Processes
+
+Named narratives through the decision graph — perspectives, not structural boundaries. "The lending process" is the story from book request to book lent. A decision can participate in multiple processes. Processes guide the analyst's conversation: "let's walk through what happens when..."
+
+### Info Points
+
+Atomic pieces of information that decisions need. Not declared upfront — discovered from what preconditions read, what constraints check, and what outcomes modify. The data model emerges from the decisions.

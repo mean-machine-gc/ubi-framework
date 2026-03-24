@@ -65,109 +65,191 @@ Add to `.vscode/mcp.json` in your project root:
 }
 ```
 
-### Manual
+## First Session
 
-```bash
-npx herbrand-mcp
+Start with the primer skill:
+
+```
+/herbrand-primer
 ```
 
-On startup, the MCP server installs skills, generates JSON schemas for YAML validation, configures VS Code schema support, watches for file changes, and launches the UI workbench.
+This introduces the framework, installs skills as slash commands, and launches the UI workbench. The agent will guide you through:
 
-## One-Time Setup
+1. **System discovery** — identify execution contexts, actors, and business processes
+2. **Write `system.yaml`** — the global configuration for your project
 
-After installing Herbrand for the first time, **restart your session**. The subagents (including the background Spec Agent) load at startup, so they won't be available until the next session.
-
-## Using Herbrand
-
-Once set up, just start talking. Describe your domain naturally and the Conversation Agent will capture decisions, ask clarifying questions, and coordinate with the background Spec Agent to produce validated specs.
-
-No manual actions are needed for the basic flow. When you want more control, these optional commands are available:
-
-| Command | When | What happens |
-|---|---|---|
-| `/herbrand-review` | "Show me what we have" | Agent ensures specs are current, then presents the model in plain language |
-| `/herbrand-challenge` | "What are we missing?" | Agent reads pipeline warnings and asks you about gaps, one or two at a time |
-| `/herbrand-discover` | Starting a new topic | Agent enters structured discovery mode with targeted questions |
-| `/herbrand-refine` | "Actually, that's not quite right" | Agent captures the correction and delegates the fix |
+From there, use `/herbrand-explore-process` to deep dive into each process.
 
 ## Project Structure
 
 ```
 my-project/
-  project.hb.yaml     # stream declarations
-  specs/
-    *.hb.yaml          # decision specs
-  project.schema.json  # auto-generated
-  decision.schema.json # auto-generated
+  system.yaml                    # contexts, actors, process definitions
+  processes/
+    lending/
+      lending-policy.yaml        # one decision per file
+      lend-operation.yaml
+    book-return/
+      return-policy.yaml
+      return-operation.yaml
+  docs/
+    system.md                    # enriched documentation (generated)
+    processes/
+      lending.md
+  schemas/                       # auto-generated JSON schemas
 ```
 
-## The Project File
+## The System File
 
-`project.hb.yaml` declares the vocabulary of your system:
+`system.yaml` declares the structural components of your system:
 
 ```yaml
-outcomes:         # past-tense domain events (snake_case)
-intents:          # imperative commands (snake_case)
-info:             # named information units (snake_case)
-outcomeRejects:   # failure constraint tags (snake_case)
-contexts:         # semantic boundaries (snake_case)
-modules:          # consistency boundaries (snake_case)
-aggregates:       # transactional boundaries (kebab-case)
+contexts:
+  - type: institutional
+    id: library-desk
+    description: Front desk where librarians serve members
+    kind: role-authority
+
+  - type: software
+    id: lms
+    description: Library Management System
+    boundary: internal
+
+  - type: software
+    id: billing-service
+    description: External billing platform
+    boundary: external
+
+actors:
+  - type: human
+    id: librarian
+    role: Librarian
+
+  - type: llm
+    id: catalog-bot
+    description: AI assistant for catalog operations
+
+  - type: machine
+    id: lending-engine
+    description: Deterministic lending transaction processor
+
+processes:
+  - id: lending
+    description: A member requests a book and it is lent to them
+    startsWith: [book.requested]
+    endsWith: [book.lent, member.loan.limit.reached]
 ```
+
+**Execution contexts** define where decisions happen: software systems (internal or external) and institutional structures (role-authority, ceremony, department, committee).
+
+**Actors** define who executes decisions: humans with roles, LLMs, or deterministic machines.
+
+**Processes** define named narratives — perspectives through the decision graph, not structural boundaries. A decision can participate in multiple processes.
 
 ## Decision Specs
 
-Each `.hb.yaml` file in `specs/` describes a single decision. There are two types:
+Each YAML file in `processes/` describes a single decision. There are two types:
 
-### Intent Decision
+### Policy (intent decision)
 
-A human (or automation) observes an outcome and decides to act:
+A policy listens to outcomes, evaluates preconditions, and emits an intent — *what should happen*. If preconditions aren't met, it silently drops.
 
 ```yaml
-type: intent
-agent: human
-role: product_owner
-context: ordering
-module: order_management
-aggregate: order
-businessGoal: initiate the fulfilment process
-trigger: order_placed
+id: lending-policy
+type: policy
+description: When a book is requested, attempt to lend it
+businessGoal: members can borrow books from the library
+context: library-desk
+actor: librarian
+activatedBy: [book.requested]
+emits: lend.book
+processes: [lending]
+
 preconditions:
-  - description: Order has all required items
-    requiredInfo: [order_items, customer_address]
-    scenarios:
-      - description: Complete order with valid address
-producesIntent: fulfil_order
+  - id: book-exists
+    description: The requested book must exist in the catalog
+    reads: [book.exists]
+
+  - id: member-exists
+    description: The requesting member must exist
+    reads: [member.exists]
 ```
 
-### Outcome Decision
+### Operation (outcome decision)
 
-The system evaluates an intent and produces outcomes:
+An operation listens to intents, evaluates constraints, and produces outcomes — *what has happened*. If any constraint fails, it produces an explicit OperationFailed outcome.
 
 ```yaml
-type: outcome
-agent: machine
-context: ordering
-module: order_management
-aggregate: order
-trigger: fulfil_order
-shouldFailWith:
-  out_of_stock:
-    description: One or more items are not available
-    requiredInfo: [inventory_levels]
-    scenarios:
-      - description: Item quantity exceeds stock
-shouldSucceedWith:
-  order_fulfilled:
-    condition: always
-    description: All items allocated and shipment initiated
-    requiredInfo: [order_items, inventory_levels]
-    scenarios:
-      - description: All items in stock
-shouldAssert:
-  - tag: inventory_updated
-    description: Stock levels reflect allocated items
-    affectedInfo: [inventory_levels]
+id: lend-operation
+type: operation
+description: Lend a book to a member
+context: lms
+actor: lending-engine
+activatedBy: [lend.book]
+processes: [lending]
+
+constraints:
+  - id: book-available
+    description: Book must be available for lending
+    reads: [book.available]
+
+  - id: member-not-suspended
+    description: Member must not be suspended
+    reads: [member.suspended]
+
+  - id: under-loan-limit
+    description: Member must not have exceeded their loan limit
+    reads: [member.active.loans, member.max.loans]
+
+unconditionalOutcome:
+  kind: book.lent
+  description: The book has been lent to the member
+  effects:
+    - point: book.available
+      description: Set to false
+    - point: member.active.loans
+      description: Incremented by 1
+    - point: loan.due.date
+      description: Set to 14 days from now
+
+conditionalOutcomes:
+  - condition:
+      description: Member reached their loan limit after this loan
+      reads: [member.active.loans, member.max.loans]
+    outcome:
+      kind: member.loan.limit.reached
+      description: Member has hit their borrowing limit
+      effects: []
 ```
 
-Key distinction: intent precondition failures are silent skips (non-events). Outcome constraint failures are rejection events that enter the stream and can trigger other decisions.
+### Key distinctions
+
+| | Policy | Operation |
+|---|---|---|
+| Listens to | Outcomes | Intents |
+| Produces | Intents (commands) | Outcomes (events) |
+| On failure | Silent drop (not an event) | OperationFailed outcome |
+| Guard type | Preconditions | Constraints |
+| Actor | Human, LLM, or machine | LLM or machine (human in institutional contexts) |
+
+## The Workflow
+
+The typical workflow alternates between exploration and validation:
+
+1. **`/herbrand-primer`** — start session, discover system structure
+2. **`/herbrand-explore-process`** — deep dive per process, write YAML specs, lint loop
+3. **`/herbrand-review-system`** — birds-eye analysis after processes are defined
+4. **`/herbrand-challenge`** — stress-test the model for edge cases
+5. **`/herbrand-enrich`** — generate prose documentation
+
+The agent writes YAML files. Herbrand validates them instantly. The UI shows live results. Lint errors must be fixed before moving to the next stage — the pipeline gates each step.
+
+## The UI Workbench
+
+Launch manually:
+
+```bash
+npx herbrand-ui --folder .
+```
+
+Or let the agent launch it via the `/herbrand-primer` skill. The workbench watches your project folder and updates live as YAML files change.

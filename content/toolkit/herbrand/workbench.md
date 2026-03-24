@@ -4,37 +4,104 @@ weight: 5
 toc: true
 ---
 
-The Herbrand UI is a React-based visual workbench that provides three complementary views of your business analysis. It launches automatically when the MCP server starts, or can be started manually.
+The Herbrand UI is a React workbench that provides live visual feedback as you build your business analysis. It watches your project folder and updates instantly when YAML files change. Launch it via the MCP server or manually:
+
+```bash
+npx herbrand-ui --folder .
+```
 
 ## Views
 
-### Specs View
+### Specification View
 
-Three-column layout for inspecting individual decision specs:
+Three-column layout for inspecting the system structure:
 
-- **Left sidebar** — filterable spec list with context/module/aggregate filter chips, colour-coded dots (orange for outcome decisions, blue for intent decisions)
-- **Centre panel** — detailed spec metadata: triggers, preconditions, choices, assertions
-- **Right panel** — lint results and validation messages grouped by spec
+**Left column (25%)** — structural components:
+- **Actors** — each actor card shows type (human/LLM/machine), role or description, and how many decisions they're assigned to
+- **Execution contexts** — type (software/institutional), description, decision and actor counts
+- **Decision tree** — grouped by context, click to scroll to the decision card
 
-### Decision Graph
+**Center column (50%)** — decision cards:
+- Type badge (policy/operation) with actor and context badges
+- Business goal
+- Chain visualization: activated-by signals → emitted signals
+- Preconditions (policies) or constraints (operations) with info point reads
+- Outcomes with side effects
+- Inline lint violations attached to each decision
 
-Interactive graph visualization built with React Flow:
+**Right column (25%)** — info universe:
+- All discovered info points with lint warnings
+- Shows what data the system needs and where it comes from
 
-- **Swimlane layout** — views lane at top, human role lanes in the middle, automations lane at bottom
-- **Colour-coded nodes** — intent decisions (blue), outcome decisions (orange), rejections (red), views (green)
-- **Edge types** — intent flow, outcome flow, reject flow, view-to-intent, information flow
-- **Side panel** — behaviour lint results grouped by rule, with warning count badge
-- **Controls** — zoom, fit view, pan
+**Process filtering** — pills at the top filter all three columns to a single process. Actors, contexts, decisions, and info points not relevant to the selected process disappear.
 
-The graph is the central artifact — it shows the reactive loops, the decision chains, and the structural relationships that are invisible when reading specs individually.
+**Lint panel** — clickable summary in the overview bar expands to show all violations across all scopes.
+
+### Graph View
+
+Interactive decision graph built with React Flow:
+
+- **Actor×context swimlanes** — horizontal bands grouped by actor type (human first, then LLM, then machine), each labeled with actor and context
+- **View row** — derived views sit above their decision in each swimlane, connected by informs edges
+- **Signal nodes** — intents (blue) and outcomes (orange) flow between decisions. External signals have dashed borders. Terminal signals have no downstream.
+- **Stacked outcomes** — when an operation produces multiple outcomes (unconditional + conditional), they stack vertically
+- **Bezier edges** — naturally separate parallel paths
+- **Click tooltips** — click a decision node to see its preconditions/constraints with info point reads. Click a conditional outcome to see the condition.
+- **Constraint/precondition badges** — red count badge on decisions that have guards
+- **Side effects toggle** — show/hide animated dashed edges from outcomes to the views they update
+- **Process filtering** — pills filter the graph to a single process subgraph
+
+**Analysis panel** — toggle the "Analysis" button to split the view: graph on the left, analysis results on the right. Insights grouped by category:
+- **Boundaries** — context cohesion, cross-boundary edges
+- **Impact** — bottleneck detection, blast radius
+- **Clustering** — info point aggregates, boundary alignment
+- **Flow** — critical paths, dependency depth, implementation order
+
+**Lint drawer** — bottom-left badge with violation count, click to expand a scrollable list.
 
 ### Business View
 
-User story cards in "As a [role], I want to [intent] so to [goal]" format, each with four tabs:
+User story and automation cards — the crown jewel for stakeholder communication.
 
-- **Acceptance Criteria** — Given/When/Then format covering triggers, preconditions, outcomes, assertions, and failure cases
-- **Decision Table** — tabular view with scenario descriptions, precondition pass/fail columns, constraints, outcomes, assertions, effects
-- **Scenarios** — grouped by type: success, failure, skipped
-- **Views** — role-based information requirements
+**Two card types:**
+- **User Story** (human actor) — warm accent, "As a [role], I want to [intent] so that [goal]"
+- **Automation** (LLM/machine actor) — cool accent, "When [trigger], [actor] at [context] [intent] so that [goal]"
 
-All derived from the decision graph — not manually authored. When specs change, the business view updates automatically.
+Each card has four tabs:
+
+**Acceptance Criteria** — structured Given/When/Then:
+- Given: preconditions with info point reads
+- When: the intent, triggered by the outcome
+- Then: outcomes with effects and conditional outcomes
+- Should Fail If: constraints with reads
+
+**Decision Table** — the exhaustive matrix:
+- Precondition columns (lilac), constraint columns (teal), condition columns (orange)
+- Rows: success (green), failure (red), skipped (grey)
+- Each cell: checkmark or cross
+- Outcome and effects columns
+
+**Scenarios** — grouped by path type:
+- Success paths with outcomes and effects
+- Failure paths with the blocking constraint
+- Skipped paths with the unmet precondition
+
+**View** — info points the decision needs:
+- For human actors: "This is the screen the user needs"
+- For LLM actors: "This is the context the agent needs"
+- For machine actors: "This is the read model the service needs"
+
+**Process filtering** — pills filter to a single process.
+
+### Document View
+
+Rendered Markdown documentation, organized by system and process:
+
+- **System Overview** pill — executive summary with actors, contexts, integration points
+- **Process pills** — per-process narrative documents
+
+Documents are generated by the `/herbrand-enrich` skill and stored in `docs/`. The UI renders them with styled typography, tables, and code highlighting. A download button exports the raw Markdown.
+
+## Dark/Light Theme
+
+Toggle via the sun/moon icon in the navbar. All views respect the theme — including the graph node colors, badges, and chart backgrounds.

@@ -4,52 +4,107 @@ weight: 3
 toc: true
 ---
 
-Herbrand uses a two-agent architecture: a **Conversation Agent** that talks to you and a background **Spec Agent** that formalizes scratchpad entries into validated YAML specs. The skills below are slash commands you can optionally invoke — the basic flow requires no commands at all.
+Herbrand provides five skills as slash commands. Each guides the agent through a specific phase of business analysis. The agent writes YAML specs using its native file capabilities; the skills provide the conversation structure and workflow.
 
 ## herbrand-primer
 
-**Framework introduction.** Defines the agent's role as a business analyst assistant. Covers the two processing loops (intent/outcome), decision procedures, information context, three boundaries (aggregate, module, context), the scratchpad concept, the two-agent model with scratchpad coordination protocol, the FORMALIZE phase, and the workflow phases (Orient → Discover → Refine → Review → Challenge).
+**Start here.** Introduces the Herbrand framework and kicks off system discovery. On first use, it installs skills as slash commands and launches the UI workbench.
 
-Use this first to orient the agent on any new project.
+The primer covers:
+- The decision model: policies (what should happen) and operations (what has happened)
+- The reactive loop: outcomes → policies → intents → operations → outcomes
+- Execution contexts, actors, and processes
+- YAML structure with complete examples
+- The MCP tools available
 
-## herbrand-discover
+Then guides the agent through system discovery:
+1. What systems are involved? → execution contexts
+2. Who makes decisions? → actors
+3. What are the main business processes? → process definitions
+4. Write `system.yaml`
 
-**Recognising new decisions.** Teaches the Conversation Agent to listen for five recognition signals in conversations:
+```
+/herbrand-primer
+```
 
-1. "Someone does X" → intent decision
-2. "System checks X" → outcome constraint
-3. "When X happens, Y reacts" → reactive chain
-4. "If X fails, Z happens" → rejection flow
-5. "Before X, check Y" → precondition
+## herbrand-explore-process
 
-Discovery now ends at the scratchpad: the Conversation Agent classifies the decision, identifies which streams it touches, determines information requirements, and writes the entry to the scratchpad with `ready` status. The Spec Agent is then spawned to pick up the entry and handle formalisation, validation, and progress tracking.
+**Deep dive into one business process.** The core workflow — walk through a process narrative with the domain expert, discover decisions step by step, write YAML specs, validate via the lint loop, and present the business view for confirmation.
 
-## herbrand-refine
+The conversation follows the chain:
+- "What triggers this process?" → external signal
+- "Who reacts? What do they decide?" → policy
+- "What do they need to know?" → preconditions and info points
+- "What can go wrong?" → constraints
+- "What happens on success?" → outcomes and effects
+- "Then what happens next?" → follow the chain
 
-**Applying new details to existing specs.** Covers when to refine (new failure scenarios, corrections, edge cases, precision improvements, new assertions, role changes, recovery flows). The Conversation Agent captures the correction in the scratchpad; the Spec Agent picks up the change and applies it to the relevant specs — reading the current state, applying changes one element at a time, checking ripple effects across the graph, and validating after each change.
+After each YAML file is written, the agent calls `get_lint_results` to validate. Errors are fixed immediately. Warnings become discussion points with the domain expert.
 
-Core rule: read before edit. Never modify a spec without understanding its current state and connections.
+When the process is complete, the agent presents the derived business view: user stories, automations, decision tables, and acceptance criteria.
 
-## herbrand-review
+```
+/herbrand-explore-process
+```
 
-**Presenting domain understanding to stakeholders.** Before reviewing, the Spec Agent is spawned in the foreground to ensure all specs are current with the latest scratchpad entries. Then the four-step workflow proceeds: gather intelligence via `get_user_stories` and `get_pipeline_results`, sequence the stories by flow, translate to plain language, practice active listening.
+## herbrand-review-system
 
-Key principle: avoid technical jargon, mirror the stakeholder's vocabulary. The output should read as business narrative, not system documentation.
+**Birds-eye analysis** after several processes are defined. Uses graph analysis to surface architectural insights.
+
+The agent:
+1. Calls `get_system_overview` for the full picture
+2. Calls `get_lint_results` for system health
+3. Calls `get_graph_insights` for structural analysis
+4. Presents findings by category:
+   - **Boundaries**: context cohesion ratios, isolated contexts
+   - **Impact**: bottleneck decisions, blast radius
+   - **Clustering**: info point aggregates, boundary alignment
+   - **Flow**: critical paths, implementation order
+
+Each insight becomes a discussion point: "Does this match your understanding? Should we adjust the boundaries?"
+
+```
+/herbrand-review-system
+```
 
 ## herbrand-challenge
 
-**Stress-testing domain models.** Before challenging, the Spec Agent is spawned in the foreground to ensure specs are up to date. Then uses behaviour lint findings as starting points — translates each lint category (orphan outcomes, dead ends, unhandled rejections, information never written or read, competing decisions) into natural questions for stakeholders. Answers route back through the scratchpad and Spec Agent.
+**Devil's advocate mode.** Stress-tests the model by probing edge cases, missing failure paths, unhandled scenarios, and implicit assumptions.
 
-Goes beyond lint: looks for missing failure modes, single-path decisions, absent roles, timing gaps, missing undo flows. Presentation guideline: curiosity, not criticism — one or two questions per round.
+Challenges each process by questioning:
+- **Preconditions**: "What if this isn't met? Should something else happen, or is the silent drop correct?"
+- **Constraints**: "What's the recovery path when this fails? Who gets notified?"
+- **Outcomes**: "Who needs to know about this? Should another policy react?"
+- **Integration points**: "What if the message is lost? What if it's delivered twice?"
+- **The model itself**: "Are there decisions that happen in reality but aren't captured?"
 
-## herbrand-scratchpad
+When a challenge reveals a gap, the agent writes updated YAML specs and re-validates.
 
-**Working memory between conversations and specs.** Captures items that aren't yet ready for formalisation: raw stakeholder quotes, possible decisions (tracked with Who/Trigger/Produces/Rejects/Status/Spec-file), open questions, domain vocabulary.
+```
+/herbrand-challenge
+```
 
-Statuses: `draft`, `ready`, `formalized`, `needs-clarification`. Four readiness questions determine when a scratchpad item becomes ready: Is the trigger clear? Are the outcomes known? Is the agent assigned? Are there at least basic scenarios?
+## herbrand-enrich
 
-The scratchpad also includes an Agent Questions section where the Spec Agent writes clarification requests. The Conversation Agent picks these up and weaves them naturally into the dialogue. The Spec Agent coordination protocol ensures both agents stay in sync through this shared workspace.
+**Generate prose documentation.** Takes the structured business view and produces human-readable Markdown documents:
 
-## herbrand-formalize
+- `docs/system.md` — executive summary, actors, contexts, integration points
+- `docs/processes/{name}.md` — per-process narrative with prose acceptance criteria, failure scenarios, and information requirements
 
-**Scratchpad-to-spec mapping** (preloaded into the Spec Agent). Handles the background formalisation loop: reads `ready` scratchpad entries, maps them to YAML spec structure, writes the spec files, validates them through the Herbrand pipeline, and marks entries as `formalized`. When an entry is too vague, marks it `needs-clarification` and writes a targeted question back to the scratchpad. This skill runs silently — the user never interacts with it directly.
+The structured data provides the scaffold; the agent adds the prose. The documents are written to the project folder and appear live in the UI's Document view.
+
+```
+/herbrand-enrich
+```
+
+## Typical Session Flow
+
+```
+/herbrand-primer          → system discovery, write system.yaml
+/herbrand-explore-process → deep dive into first process
+/herbrand-explore-process → deep dive into second process
+/herbrand-explore-process → ...
+/herbrand-review-system   → birds-eye analysis
+/herbrand-challenge       → stress-test the model
+/herbrand-enrich          → generate documentation
+```
