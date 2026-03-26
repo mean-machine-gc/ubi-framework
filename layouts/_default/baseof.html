@@ -83,22 +83,24 @@
       });
     }
 
-    // Figure zoom
+    // Figure and mermaid diagram zoom
     document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.prose figure, .prose .figure').forEach(function(fig) {
+    var zoomIcon = '<svg class="zoom-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="7" y1="10" x2="13" y2="10"/><line x1="10" y1="7" x2="10" y2="13"/></svg>'
+      + '<svg class="zoom-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="7" y1="10" x2="13" y2="10"/></svg>';
+
+    document.querySelectorAll('.prose figure, .prose .figure, .mermaid-diagram').forEach(function(el) {
       var icon = document.createElement('div');
       icon.className = 'figure-zoom';
-      icon.innerHTML = '<svg class="zoom-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="7" y1="10" x2="13" y2="10"/><line x1="10" y1="7" x2="10" y2="13"/></svg>'
-        + '<svg class="zoom-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="7" y1="10" x2="13" y2="10"/></svg>';
-      fig.appendChild(icon);
-      fig.addEventListener('click', function() {
-        fig.classList.toggle('expanded');
+      icon.innerHTML = zoomIcon;
+      el.appendChild(icon);
+      el.addEventListener('click', function() {
+        el.classList.toggle('expanded');
       });
     });
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        document.querySelectorAll('.figure.expanded, figure.expanded').forEach(function(f) {
+        document.querySelectorAll('.expanded').forEach(function(f) {
           f.classList.remove('expanded');
         });
       }

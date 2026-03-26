@@ -1427,6 +1427,8 @@ body {
 .mermaid-diagram {
   margin: var(--space-lg) 0;
   overflow-x: auto;
+  position: relative;
+  cursor: zoom-in;
 }
 
 .mermaid-diagram .mermaid {
@@ -1437,6 +1439,63 @@ body {
 .mermaid-diagram svg {
   max-width: 100%;
   height: auto;
+}
+
+.mermaid-diagram.expanded {
+  cursor: zoom-out;
+  position: fixed;
+  inset: 0;
+  top: var(--nav-height);
+  z-index: 50;
+  background: var(--bg);
+  margin: 0;
+  padding: var(--space-lg);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mermaid-diagram.expanded svg {
+  max-width: 100%;
+  max-height: calc(100vh - var(--nav-height) - 4rem);
+}
+
+/* Zoom hint icon — shared between figures and mermaid diagrams */
+.mermaid-diagram .figure-zoom {
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  width: 20px;
+  height: 20px;
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+.mermaid-diagram:hover .figure-zoom {
+  opacity: 0.8;
+}
+
+.mermaid-diagram.expanded .figure-zoom {
+  opacity: 0.8;
+}
+
+.mermaid-diagram .figure-zoom .zoom-in {
+  display: block;
+}
+
+.mermaid-diagram .figure-zoom .zoom-out {
+  display: none;
+}
+
+.mermaid-diagram.expanded .figure-zoom .zoom-in {
+  display: none;
+}
+
+.mermaid-diagram.expanded .figure-zoom .zoom-out {
+  display: block;
 }
 
 /* Override mermaid node styles for cyanotype consistency */
