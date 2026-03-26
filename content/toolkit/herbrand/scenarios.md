@@ -73,6 +73,8 @@ Herbrand removes this forcing function. Scenarios are derived from the behaviour
 
 ## Relationship to Established Concepts
 
+The practices in this section were instrumental in shaping Herbrand. BDD's insistence on shared language between domain experts and developers, SBE's elevation of examples to specification artefacts, Example Mapping's explicit separation of rules from examples, ATDD's spec-before-code discipline, and the Three Amigos' collaborative quality gate — all of these are ideas Herbrand builds on. The comparisons below are about where Herbrand formalises what these practices expressed as convention, and where it introduces sequencing constraints that the practices left to the team's judgment.
+
 ### BDD and Given / When / Then (North, 2006)
 
 GWT maps directly onto Herbrand's structure: Given captures precondition context and the info points read, When is the intent, Then is the outcome and its effects. But GWT in Herbrand is a *rendering format*, not the model — one projection of the behavioural spec, generated for human readability or test tooling consumption.
@@ -88,9 +90,9 @@ In BDD, the scenarios teams author *are* the specification; coverage depends on 
 
 ### Specification by Example (Adzic, 2011)
 
-SBE's central principle — *examples are the specification* — means accuracy depends on the discipline of keeping examples current. In Herbrand, the behavioural model is the living documentation and examples are derived from it; accuracy is guaranteed by derivation rather than discipline.
+SBE's central principle — *examples are the specification* — and its emphasis on concrete, agreed-upon instances of behaviour as the basis for living documentation is something Herbrand fully endorses. Where Herbrand is opinionated is on sequencing and dependency: examples should be informed by an existing behavioural model, not authored before one exists. Their coverage and structure cannot be reliably determined without it.
 
-The SBE principle that examples should be agreed upon *before building* is preserved and strengthened: the entire scenario universe is available before building begins, not just the examples the team happened to author.
+In Herbrand, examples are a later concern — they contribute to executable specifications, which is a verification activity that follows the preliminary definition and validation of behaviour that business analysis targets. The behavioural model comes first; examples populate the scenario space it defines. This preserves SBE's principle that examples are agreed upon before building, and strengthens it: the entire scenario universe is structurally available before building begins, not just the cases the team happened to think of.
 
 ### Example Mapping (Wynne, 2015)
 
