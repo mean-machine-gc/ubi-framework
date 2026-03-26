@@ -1,6 +1,6 @@
 ---
 title: "MCP Tools"
-weight: 4
+weight: 5
 toc: true
 ---
 
