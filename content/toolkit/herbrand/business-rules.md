@@ -125,6 +125,24 @@ A precondition rule may also appear as a constraint on the operation — same ru
 
 ## Relationship to Established Concepts
 
+### BABOK
+
+The *Business Analysis Body of Knowledge* (BABOK® Guide, IIBA, v3) is the profession's normative standard for business analysis practice. It does not specify an architectural model for business rules, but it establishes two reference points that align directly with Herbrand's structure.
+
+**The policy/rule distinction.** BABOK defines a policy as a *non-actionable directive that supports a business goal*, and a business rule as a *specific, actionable, testable directive that supports a business policy*. This maps onto the Herbrand decision model without friction: a Herbrand policy decides whether to act — it is non-actionable in BABOK's sense, governed by preconditions — while a Herbrand operation executes a specific, testable directive, governed by constraints.
+
+**The rule taxonomy.** BABOK inherits from the Business Rules Group a three-way classification of business rules:
+
+| Business Rules Group category | Description | Herbrand equivalent |
+|---|---|---|
+| Structural assertion | Defines or constrains the structure of the domain (invariants) | Not modelled — emerges after behaviour is formalised |
+| Action assertion | Constrains or triggers behaviour at execution time | Constraints (and, upstream, preconditions) |
+| Derivation | Infers new facts from existing ones | Not modelled — depends on entities and views that are not yet defined |
+
+This taxonomy runs on a different axis than Herbrand's. It also reflects a deliberate sequencing: both structural assertions and derivations depend on artefacts that Herbrand treats as outputs, not inputs. Structural assertions require a settled entity model — which in Herbrand emerges from what behavioural rules read and write. Derivations go further still: they require both entities *and* views to exist, so that data derivation pipelines can be assessed against a consolidated picture of what the system produces. Modelling either before behaviour is formalised would be premature — it would let an anticipated data model drive a behavioural design that does not yet exist. It classifies rules by *what they are about*; Herbrand classifies them by *when and how they are enforced*. The two are orthogonal — a rule that is an action assertion in BABOK terms may be a precondition or a constraint in Herbrand terms, depending on where in the decision lifecycle it is meaningful to evaluate it.
+
+What BABOK does not specify — and what Herbrand formalises — is the enforcement architecture: where in a pipeline each category lives, what the failure mode is, and what the downstream consequences of failure are. BABOK's Business Rules Analysis technique is explicitly a *discovery and documentation* practice. Herbrand goes further in two ways: it turns documented rules into an enforceable, graph-connected model with defined failure semantics, and it enforces the natural emergence order of rule categories — behavioural rules first, structural assertions once entities exist, derivations once both entities and views are defined. This sequencing is not a convention; it is a structural constraint of the model, one that prevents premature definitions and the modelling errors that follow from them.
+
 ### Design by Contract (Meyer, 1992)
 
 Bertrand Meyer's *Design by Contract* (DbC) is the canonical source of precondition/postcondition language in software engineering. DbC specifies three assertion types for a software component: preconditions (caller's obligation before invoking), postconditions (supplier's guarantee after returning), and invariants (class-wide consistency properties that hold at all observable states).
